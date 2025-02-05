@@ -1,0 +1,46 @@
+{
+  "name": "create-deft",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "author": "Evan You, Kason Yang",
+  "bin": {
+    "create-deft": "index.js"
+  },
+  "files": [
+    "index.js",
+    "template-*",
+    "android-template",
+    "rust-template",
+    "dist"
+  ],
+  "scripts": {
+    "dev": "unbuild --stub",
+    "build": "unbuild",
+    "typecheck": "tsc --noEmit",
+    "update-webpack-config": "node gen-webpack-config.mjs",
+    "update-tpl-deps": "node update-tpl-deps.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": "^18.0.0 || ^20.0.0 || >=22.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deft-ui/deft-js.git",
+    "directory": "packages/create-deft"
+  },
+  "bugs": {
+    "url": "https://github.com/deft-ui/deft-js/issues"
+  },
+  "homepage": "https://github.com/deft-ui/deft-js/tree/main/packages/create-deft#readme",
+  "devDependencies": {
+    "@types/minimist": "^1.2.5",
+    "@types/prompts": "^2.4.9",
+    "cross-spawn": "^7.0.6",
+    "minimist": "^1.2.8",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2",
+    "unbuild": "^3.3.1"
+  }
+}
