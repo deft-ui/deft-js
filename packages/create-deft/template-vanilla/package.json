@@ -10,8 +10,8 @@
   "dependencies": {
     "cross-env": "^7.0.3",
     "deft-react": "^0.1.0",
-    "deft-webpack-plugin": "^0.1.1",
     "deft-sys": "^0.1.4",
+    "deft-webpack-plugin": "^0.1.2",
     "react": "18.1.0",
     "react-reconciler": "0.28.0"
   },

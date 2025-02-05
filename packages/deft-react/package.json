@@ -1,0 +1,28 @@
+{
+  "name": "deft-react",
+  "version": "0.1.0",
+  "description": "",
+  "typings": "dist/esm/types/index.d.ts",
+  "main": "dist/deft-react.js",
+  "scripts": {
+    "build:es": "npx rollup -c rollup.config.es.js"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "dependencies": {
+    "react": "18.1.0",
+    "react-reconciler": "0.28.0",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-typescript": "^8.3.0",
+    "@types/react": "^18.3.3",
+    "rollup-plugin-dts": "^4.2.2",
+    "typescript": "^4.8.2",
+    "deft-sys": "^0.1.4"
+  }
+}

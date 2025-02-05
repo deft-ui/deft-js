@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "declaration": true,
+    "declarationDir": "./dist/esm/types",
+    "noImplicitAny": false,
+    "module": "es6",
+    "target": "ESNext",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "esnext"
+    ]
+  },
+  "include": [
+    "src",
+    "node_modules/deft-sys/deft.d.ts"
+  ]
+}
