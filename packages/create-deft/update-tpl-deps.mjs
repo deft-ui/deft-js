@@ -12,7 +12,7 @@ function shell(dir, commands) {
 
 function updateTplDeps(dir) {
     shell(dir, [
-        "npm i deft-webpack-plugin",
+        "npm i --save-dev deft-webpack-plugin",
     ]);
 }
 

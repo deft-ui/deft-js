@@ -337,7 +337,8 @@ async function init() {
   )
   copy(androidTemplateDir, root + "/android");
   const appId = androidResult.appId || argId;
-  rewriteAndroidAppId(root, appId);
+  rewriteAndroidAppId(root, "android/app/build.gradle", appId);
+  rewriteAndroidAppId(root, "webpack.config.js", appId);
 
   const cdProjectName = path.relative(cwd, root)
   console.log(`\nDone. Now run:\n`)
@@ -361,8 +362,8 @@ async function init() {
   console.log()
 }
 
-function rewriteAndroidAppId(root: string, appId: string) {
-  const file = path.resolve(root, "android/app/build.gradle");
+function rewriteAndroidAppId(root: string, fileName: string, appId: string) {
+  const file = path.resolve(root, fileName);
   const newContent = fs.readFileSync(file, 'utf8').replace(/fun.kason.deft_demo/g, appId);
   fs.writeFileSync(file, newContent, 'utf8');
 }

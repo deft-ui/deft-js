@@ -1,25 +1,10 @@
 const path = require('path');
 const DeftWebpackPlugin = require("deft-webpack-plugin");
 
-const deftPlatform = process.env.DEFT_PLATFORM || "host";
-
-const androidRunCmd = [
-    "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build",
-    "cd android && ./gradlew assembleDebug",
-    "adb install -t app/build/outputs/apk/debug/app-debug.apk",
-    "adb reverse tcp:7800 tcp:7800",
-    "adb shell am start fun.kason.deft_demo/deft_app.MainActivity"
-].join(" && ");
-
-const allRunCommand = {
-    "android": androidRunCmd,
-}
-const allBuildCommand = {
-    "android": "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
-}
 const deftOptions = {
-    runCommand: allRunCommand[deftPlatform],
-    buildCommand: allBuildCommand[deftPlatform],
+    android: {
+        appId: "fun.kason.deft_demo",
+    }
 };
 
 module.exports = {
