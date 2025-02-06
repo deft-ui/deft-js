@@ -91,7 +91,7 @@ class DeftWebpackPlugin {
         }
         const actionMap = {
             a: () => this._runPlatform(options,"android", runCallback),
-            p: () => this._runPlatform(options,"host", runCallback),
+            r: () => this._runPlatform(options,"host", runCallback),
         }
         stdin.on('data', data => {
             if (data == "\u0003") {
