@@ -21,7 +21,7 @@ function createBody() {
     const label = new LabelElement();
     label.setText("Welcome to Your Deft App");
     label.setStyle({
-        fontSize: 28,
+        fontSize: 20,
     });
     container.addChild(label);
 
