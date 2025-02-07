@@ -6,7 +6,7 @@ function getEventBindName(prop) {
     if (prop.startsWith("on")) {
         return `bind` + prop.substring(2)
     }
-    return prop;
+    return null;
 }
 
 export function updateNativeComponent(el, oldProps, props) {
@@ -16,19 +16,24 @@ export function updateNativeComponent(el, oldProps, props) {
             if (props[p] === oldProps[p]) {
                 continue;
             }
-            const setter = el[getSetterName(p)];
-            if (setter) {
-                setter.call(el, v);
-                continue;
-            }
-            const binder = el[getEventBindName(p)];
-            if (binder) {
-                binder.call(el, v);
-                continue;
-            }
-            if (p !== "children") {
-                // console.log("Unknown property:" + p);
-                el[p] = v;
+            try {
+                const setter = el[getSetterName(p)];
+                if (setter) {
+                    setter.call(el, v);
+                    continue;
+                }
+                const binderName = getEventBindName(p);
+                if (binderName) {
+                    const binder = el[binderName];
+                    binder.call(el, v);
+                    continue;
+                }
+                if (p !== "children") {
+                    // console.log("Unknown property:" + p);
+                    el[p] = v;
+                }
+            } catch (error) {
+                console.error(`failed to update prop: ${p}`, error);
             }
         }
     } catch (error) {
