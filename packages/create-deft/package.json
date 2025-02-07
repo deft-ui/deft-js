@@ -1,6 +1,6 @@
 {
   "name": "create-deft",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
   "license": "MIT",
   "author": "Evan You, Kason Yang",
@@ -22,7 +22,7 @@
     "build": "unbuild",
     "typecheck": "tsc --noEmit",
     "update-webpack-config": "node gen-webpack-config.mjs",
-    "update-tpl-deps": "node update-tpl-deps.mjs",
+    "update-package-json": "node update-package-json.mjs",
     "prepublishOnly": "npm run build"
   },
   "engines": {

@@ -11,6 +11,7 @@ function test_tpl() {
   fi
   cd "test/$tpl"
   npm i
+  # npm i --registry https://registry.npmjs.org/
   npm run dev
   cd ../..
   mv "test/$tpl/target" "test/target"

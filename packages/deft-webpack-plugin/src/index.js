@@ -9,6 +9,7 @@ class DeftWebpackPlugin {
         console.log("==============================================");
         console.log("Press r to run on this device");
         console.log("Press a to run on connected android device");
+        console.log("Press q to quit");
         console.log("==============================================");
     }
 
@@ -19,7 +20,7 @@ class DeftWebpackPlugin {
         }
         const activityId = this.options.android.activityId || "deft_app.MainActivity";
         return [
-            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
+            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release --features x11",
             "cd android && ./gradlew assembleDebug",
             "adb install -t app/build/outputs/apk/debug/app-debug.apk",
             `adb reverse tcp:${port} tcp:${port}`,
@@ -29,30 +30,62 @@ class DeftWebpackPlugin {
 
     _getAndroidBuildCommand() {
         return [
-            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
+            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release --features x11",
             "cd android && ./gradlew assembleDebug", //TODO release build?
         ].join(" && ");
     }
 
-    _getDefaultRunCommand(platform, serverUrl, port) {
-        switch (platform) {
-            case "android":
-                return this._getAndroidRunCommand(port);
-            case "host":
-                return "cargo run";
-            default:
-                throw new Error(`unsupported platform: ${platform}`);
+    _getCargoCommand(cargoCmd, platform, features) {
+        const targetMap = {
+            "macos-amd64": "x86_64-apple-darwin",
+            "macos-arm64": "aarch64-apple-darwin",
+            "linux-amd64": "x86_64-unknown-linux-gnu",
+            "linux-arm64": "aarch64-unknown-linux-gnu",
+            "windows-amd64": "x86_64-pc-windows-msvc",
         }
+        const target = targetMap[platform];
+        if (!target) {
+            throw new Error(`Unsupported platform: ${platform}`);
+        }
+        let cmd = `cargo ${cargoCmd} --release --target ${target}`;
+        if (features) {
+            cmd += " --features " + [].concat(features).join(",");
+        }
+        return cmd;
     }
 
-    _getDefaultBuildCommand(platform) {
-        switch (platform) {
-            case "android":
-                return this._getAndroidBuildCommand();
-            case "host":
-                return "cargo build --release"
-            default:
-                throw new Error(`unsupported platform: ${platform}`);
+    _getDefaultRunCommands(serverUrl, port) {
+        const commands = {
+            "android-arm64": this._getAndroidRunCommand(port),
+            "linux-amd64": this._getCargoCommand("run", "linux-amd64", ["x11", "wayland"]),
+            "linux-arm64": this._getCargoCommand("run", "linux-arm64", ["x11", "wayland"]),
+            "windows-amd64": this._getCargoCommand("run", "windows-amd64"),
+            "darwin-amd64": this._getCargoCommand("run", "macos-amd64"),
+            "darwin-arm64": this._getCargoCommand("run", "macos-arm64"),
+        }
+        this._addHostPlatformCmd(commands);
+        return commands;
+    }
+
+    _getDefaultBuildCommands() {
+        const commands = {
+            "android-arm64": this._getAndroidBuildCommand(),
+            "linux-amd64": this._getCargoCommand("build", "linux-amd64", ["x11", "wayland"]),
+            "linux-arm64": this._getCargoCommand("build", "linux-arm64", ["x11", "wayland"]),
+            "windows-amd64": this._getCargoCommand("build", "windows-amd64"),
+            "darwin-amd64": this._getCargoCommand("build", "macos-amd64"),
+            "darwin-arm64": this._getCargoCommand("build", "macos-arm64"),
+        }
+        this._addHostPlatformCmd(commands);
+        return commands;
+    }
+
+    _addHostPlatformCmd(commands) {
+        const p = process.platform.replace("win32", "windows");
+        const arch = process.arch.replace("x64", "amd64");
+        const key = `${p}-${arch}`;
+        if (commands[key]) {
+            commands.host = commands[key];
         }
     }
 
@@ -63,8 +96,13 @@ class DeftWebpackPlugin {
             process.exit(1);
         }
         const serverUrl = `http://localhost:${port}`
-        const runCommands = this.options.runCommands || {};
-        const cmd = runCommands[platform] || this._getDefaultRunCommand(platform, serverUrl, port);
+        const runCommands = Object.assign(this._getDefaultRunCommands(serverUrl, port), this.options.runCommands || {});
+        const cmd = runCommands[platform];
+        if (!cmd) {
+            const availablePlatforms = Object.keys(runCommands).join(",");
+            throw new Error(`unsupported dev platform: ${platform}, available platforms: ${availablePlatforms}`);
+        }
+        console.log(`Run command: ${cmd}`);
         const result = child_process.spawn(cmd, {
             env: {
                 ...process.env,
@@ -90,8 +128,9 @@ class DeftWebpackPlugin {
             this._displayMenus();
         }
         const actionMap = {
-            a: () => this._runPlatform(options,"android", runCallback),
+            a: () => this._runPlatform(options,"android-arm64", runCallback),
             r: () => this._runPlatform(options,"host", runCallback),
+            q: () => process.exit(0),
         }
         stdin.on('data', data => {
             if (data == "\u0003") {
@@ -101,7 +140,8 @@ class DeftWebpackPlugin {
             if (action) {
                 action();
             } else {
-                console.log("Unknown action: ", action);
+                console.log("Unknown action: ", data);
+                this._displayMenus();
             }
         });
     }
@@ -122,8 +162,13 @@ class DeftWebpackPlugin {
                 process.exit(1);
             }
             const platform = process.env.DEFT_PLATFORM || "host";
-            const buildCommands = this.options.buildCommands || {};
-            const cargoBuildCmd = buildCommands[platform] || this._getDefaultBuildCommand(platform);
+            const buildCommands = Object.assign(this._getDefaultBuildCommands(), this.options.buildCommands || {});
+            const cargoBuildCmd = buildCommands[platform];
+            if (!cargoBuildCmd) {
+                const availablePlatforms = Object.keys(buildCommands).join(",");
+                throw new Error(`unsupported build platform: ${platform}, available build platforms: ${availablePlatforms}`);
+            }
+            console.log(`Build command: ${cargoBuildCmd}`);
             compiler.hooks.afterEmit.tapAsync('DeftWebpackPlugin', (compilation, callback) => {
                 let result = child_process.spawn(cargoBuildCmd, {
                     env: {
