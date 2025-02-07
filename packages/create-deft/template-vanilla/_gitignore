@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 target
+.gradle
+build/
+libdeftapp.so
