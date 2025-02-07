@@ -909,57 +909,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "deft"
-version = "0.1.5"
-dependencies = [
- "android_logger",
- "anyhow",
- "backtrace",
- "base16ct",
- "base64 0.22.1",
- "bezier-rs",
- "cfg_aliases 0.2.1",
- "clipboard",
- "deft-macros",
- "deft-quick-js",
- "deft-skia-bindings",
- "deft-skia-safe",
- "deft-winit",
- "deft-yoga",
- "futures-util",
- "image",
- "jni",
- "ksni",
- "lazy_static",
- "libc",
- "log",
- "measure_time",
- "memory-stats",
- "native-dialog",
- "ordered-float",
- "raw-window-handle 0.5.2",
- "reqwest",
- "rodio",
- "rusqlite",
- "serde",
- "serde_json",
- "sha1",
- "skia-window",
- "sled",
- "tokio",
- "tokio-tungstenite",
- "tokio-util",
-]
-
-[[package]]
-name = "deft-macros"
-version = "0.1.1"
-dependencies = [
- "quote",
- "syn",
-]
-
-[[package]]
 name = "deft-quick-js"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
