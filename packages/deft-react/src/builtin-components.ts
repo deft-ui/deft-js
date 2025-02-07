@@ -27,7 +27,8 @@ export function updateNativeComponent(el, oldProps, props) {
                 continue;
             }
             if (p !== "children") {
-                console.log("Unknown property:" + p);
+                // console.log("Unknown property:" + p);
+                el[p] = v;
             }
         }
     } catch (error) {

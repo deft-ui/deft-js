@@ -110,7 +110,7 @@ export function Select<T>(props: SelectProps<T>) {
             }
         }));
         let bounds = e.currentTarget.getBoundingClientRect();
-        const rootElement = e.currentTarget.getRootElement() as ContainerBasedElement;
+        const rootElement = e.currentTarget.rootElement as ContainerBasedElement;
         const dlg = createPopup(rootElement, bounds.x, bounds.y + bounds.height, bounds.width);
         const root = React.createElement(Menu, {
             confirm(value: void) {

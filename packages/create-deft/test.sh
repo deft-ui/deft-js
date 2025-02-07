@@ -10,16 +10,19 @@ function test_tpl() {
     mv test/target test/$tpl/
   fi
   cd "test/$tpl"
-  npm i
+  pnpm i
   # npm i --registry https://registry.npmjs.org/
-  npm run dev
+  npm run build
+  npm run build:android
   cd ../..
-  mv "test/$tpl/target" "test/target"
+  if [ -d "test/$tpl/target" ]; then
+    mv "test/$tpl/target" "test/target"
+  fi
 }
 
 npm run build
 mkdir -p test
-test_tpl vanilla
+test_tpl react-ts
 test_tpl vanilla-ts
 test_tpl react
-test_tpl react-ts
+test_tpl vanilla

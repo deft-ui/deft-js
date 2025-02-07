@@ -35,10 +35,10 @@ export class DeftWindow extends Window {
     constructor(props: WindowAttrs) {
         super(props);
         const body = new ContainerElement();
-        body.setStyle({
+        body.style = {
             height: '100%',
             width: '100%',
-        });
+        };
         const onKeyUp= (e: IKeyEvent)=> {
             console.log("onKeyUp", e);
             if (e.detail.key == "GoBack") {
@@ -49,22 +49,22 @@ export class DeftWindow extends Window {
             }
         }
         body.bindKeyUp(onKeyUp);
-        this.setBody(body);
+        this.body = body;
         this.#body = body;
     }
 
     newPage(reactNode: ReactNode, options ?: PageOptions) {
         options = options || {};
         const pageEl = new ContainerElement();
-        pageEl.setAutoFocus(true);
-        pageEl.setStyle({
+        pageEl.autoFocus = true;
+        pageEl.style = {
             ...options.style,
             position: 'absolute',
             left: 0,
             top: 0,
             right: 0,
             bottom: 0,
-        });
+        };
         let page: Page;
         const close = () => {
             this.#body.removeChild(pageEl);

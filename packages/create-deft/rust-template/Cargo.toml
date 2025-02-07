@@ -4,10 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-deft = "0.1.11"
+deft = "0.2.0"
 
 [build-dependencies]
-deft-build = { version = "0.1.1" }
+deft-build = { version = "0.2.0" }
 
 [features]
 tray = ["deft/tray"]

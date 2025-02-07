@@ -33,13 +33,13 @@ export function Toast(props: ToastProps) {
 Toast.show = async function (window: DeftWindow, message: string): Promise<void> {
     //TODO remove wrapper style
     const wrapper = new ContainerElement();
-    wrapper.setStyle({
+    wrapper.style = {
         position: "absolute",
         left: 0,
         top: 0,
         width: '100%',
         height: '100%',
-    })
+    }
 
     return new Promise((resolve) => {
         let page = null;

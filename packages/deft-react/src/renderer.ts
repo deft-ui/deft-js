@@ -102,7 +102,7 @@ function commitMount(instance, updatePayload, type, oldProps, newProps) {
 }
 
 function commitTextUpdate(textInstance, oldText, newText) {
-    textInstance.setText(newText);
+    textInstance.text = newText;
     DEBUG && console.log('commitTextUpdate')
 }
 
@@ -196,15 +196,14 @@ export function render(window: DeftWindow, element: ReactNode, guiContainer: Con
     }
     function destroy(done ?: () => void) {
         if (leaveStyle) {
-            const style = guiContainer.getStyle();
-            guiContainer.setStyle({
-                ...style,
+            guiContainer.style = {
+                ...guiContainer.style,
                 ...leaveStyle,
-            });
+            };
         }
         //TODO use animation end
         //TODO use computed style
-        const style = guiContainer.getStyle();
+        const style = guiContainer.style;
         const animationDuration = style.animationDuration;
         function doDestroy() {
             DeftRenderer.updateContainer(null, root, null, null);

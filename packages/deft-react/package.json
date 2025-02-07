@@ -1,6 +1,6 @@
 {
   "name": "deft-react",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "typings": "dist/esm/types/index.d.ts",
   "main": "dist/deft-react.js",
@@ -23,6 +23,6 @@
     "@types/react": "^18.3.3",
     "rollup-plugin-dts": "^4.2.2",
     "typescript": "^4.8.2",
-    "deft-sys": "^0.1.4"
+    "deft-sys": "^0.2.1"
   }
 }
