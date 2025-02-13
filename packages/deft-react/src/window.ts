@@ -56,7 +56,7 @@ export class DeftWindow extends Window {
     newPage(reactNode: ReactNode, options ?: PageOptions) {
         options = options || {};
         const pageEl = new ContainerElement();
-        pageEl.autoFocus = true;
+        // pageEl.autoFocus = true;
         pageEl.style = {
             ...options.style,
             position: 'absolute',
