@@ -8,11 +8,17 @@ export interface PageRootProps {
     destroy: (done ?: () => void) => void,
 }
 
+export interface IPageContext {
+    root: Element;
+    window: DeftWindow;
+    destroy: (done ?: () => void) => void;
+}
+
 export const PageContext = React.createContext({
     root: null,
     window: null,
     destroy: null,
-});
+} as IPageContext);
 
 export default function PageRoot(props: PageRootProps) {
     return <PageContext.Provider value={{

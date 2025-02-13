@@ -8,6 +8,10 @@ export interface ToastProps {
     onEnded?: () => void;
 }
 
+export interface ToastOptions {
+    duration?: number;
+}
+
 export function Toast(props: ToastProps) {
     useEffect(() => {
         setTimeout(() => {
@@ -30,7 +34,7 @@ export function Toast(props: ToastProps) {
     </Container>
 }
 
-Toast.show = async function (window: DeftWindow, message: string): Promise<void> {
+Toast.show = async function (window: DeftWindow, message: string, options?: ToastOptions): Promise<void> {
     //TODO remove wrapper style
     const wrapper = new ContainerElement();
     wrapper.style = {
@@ -40,6 +44,7 @@ Toast.show = async function (window: DeftWindow, message: string): Promise<void>
         width: '100%',
         height: '100%',
     }
+    const duration = options?.duration;
 
     return new Promise((resolve) => {
         let page = null;
@@ -49,6 +54,6 @@ Toast.show = async function (window: DeftWindow, message: string): Promise<void>
             page?.destroy();
         }
 
-        page = window.newPage(<Toast content={message} onEnded={onEnded}/>);
+        page = window.newPage(<Toast content={message} duration={duration} onEnded={onEnded}/>);
     })
 }

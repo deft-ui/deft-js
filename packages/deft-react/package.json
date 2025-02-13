@@ -5,7 +5,8 @@
   "typings": "dist/esm/types/index.d.ts",
   "main": "dist/deft-react.js",
   "scripts": {
-    "build:es": "npx rollup -c rollup.config.es.js"
+    "build:es": "npx rollup -c rollup.config.es.js",
+    "prepublish": "npm run build:es"
   },
   "files": [
     "dist",

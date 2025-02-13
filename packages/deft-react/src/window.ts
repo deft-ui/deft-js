@@ -1,5 +1,6 @@
 import {render} from "./renderer";
 import {ReactNode} from "react";
+import {Toast, ToastOptions} from "./packages/toast";
 
 animation_create("deft-react-page-enter", {
     "0": {
@@ -40,7 +41,7 @@ export class DeftWindow extends Window {
             width: '100%',
         };
         const onKeyUp= (e: IKeyEvent)=> {
-            console.log("onKeyUp", e);
+            // console.log("onKeyUp", e);
             if (e.detail.key == "GoBack") {
                 const pageCount = this.#pages.length;
                 if (pageCount > 1) {
@@ -51,6 +52,10 @@ export class DeftWindow extends Window {
         body.bindKeyUp(onKeyUp);
         this.body = body;
         this.#body = body;
+    }
+
+    toast(message: string, options?: ToastOptions) {
+        return Toast.show(this, message, options);
     }
 
     newPage(reactNode: ReactNode, options ?: PageOptions) {
