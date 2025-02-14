@@ -1,6 +1,7 @@
 import {render} from "./renderer";
 import {ReactNode} from "react";
 import {Toast, ToastOptions} from "./packages/toast";
+import {Menu, MenuItem, MenuPosition} from "./packages/menu";
 
 animation_create("deft-react-page-enter", {
     "0": {
@@ -56,6 +57,10 @@ export class DeftWindow extends Window {
 
     toast(message: string, options?: ToastOptions) {
         return Toast.show(this, message, options);
+    }
+
+    showMenu(items: MenuItem[], position: MenuPosition) {
+        Menu.show(this, items, position);
     }
 
     newPage(reactNode: ReactNode, options ?: PageOptions) {

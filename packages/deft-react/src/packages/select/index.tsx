@@ -1,6 +1,8 @@
-import React, {ReactElement} from "react";
-import {Container, Label, Row} from "../../components";
-import {render} from "../../renderer";
+import React, {useContext} from "react";
+import {Label, Row} from "../../components";
+import {PageContext} from "../../page-root";
+import {Popup} from "../popup";
+import {Menu, MenuItem} from "../menu";
 
 export interface SelectProps<T> {
     value?: T;
@@ -13,94 +15,9 @@ export interface OptionItem<T> {
     value: T;
 }
 
-export interface MenuItem {
-    label: string
-    onClick?: () => void
-}
-
-interface DialogContentProps<R, P> {
-    confirm(value: R);
-
-    cancel();
-
-    props: P;
-}
-
-
-function Menu(props: DialogContentProps<void, MenuItem[]>) {
-    console.log('menus', props.props);
-    const menuElList = props.props.map((it, idx) => {
-        const onClick = (e) => {
-            try {
-                it.onClick && it.onClick();
-            } finally {
-                props.cancel();
-            }
-        }
-        return <Container
-            key={idx}
-            style={{
-                justifyContent: "center",
-                padding: '2 12',
-            }}
-            hoverStyle={{
-                background: "#334E5E",
-            }}
-            onClick={onClick}>{it.label}</Container>
-    });
-    const style = {
-        padding: 0,
-        color: "#FFF",
-        border: "1 #4A4B4E",
-    }
-    return <Container style={style}>
-        {menuElList}
-    </Container>
-}
-
-function createPopup(contentElement: ContainerBasedElement, x, y, minWidth) {
-    /*
-    const dialogRoot = new ContainerElement();
-    dialogRoot.setStyle({
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        right: 0,
-        bottom: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
-    })
-    const bodyStyle: StyleProps = {
-        background: '#444',
-        position: 'absolute',
-        left: x,
-        top: y,
-        minWidth,
-    };
-
-    function close() {
-        contentElement.removeChild(dialogRoot);
-    }
-
-    dialogRoot.bindClick(() => {
-        close();
-    })
-    return {
-        render(root: ReactElement) {
-            contentElement.addChild(dialogRoot);
-
-            const dialogBody = new ContainerElement();
-            dialogBody.setStyle(bodyStyle);
-            dialogRoot.addChild(dialogBody);
-            render(root, dialogBody);
-        },
-        close,
-    }
-     */
-}
-
-
 export function Select<T>(props: SelectProps<T>) {
+    const pageContext = useContext(PageContext);
+
     function onClick(e: IMouseEvent) {
         const options = props.options || [];
         const menus: MenuItem[] = options.map(it => ({
@@ -109,20 +26,15 @@ export function Select<T>(props: SelectProps<T>) {
                 props.onChange?.(it.value);
             }
         }));
+
+
         let bounds = e.currentTarget.getBoundingClientRect();
-        const rootElement = e.currentTarget.rootElement as ContainerBasedElement;
-        const dlg = createPopup(rootElement, bounds.x, bounds.y + bounds.height, bounds.width);
-        const root = React.createElement(Menu, {
-            confirm(value: void) {
-            },
-            cancel() {
-
-            },
-            props: menus,
-        });
-        //TODO use popup
-        // dlg.render(root);
-
+        console.log("bounds", bounds);
+        pageContext.window.newPage(
+            <Popup x={bounds.x} y={bounds.y + bounds.height} overlayStyle={{background: '#0000'}}>
+                <Menu items={menus} width={bounds.width} />
+            </Popup>
+        );
     }
 
     const selectedOption = props.options.find(it => it.value === props.value);
