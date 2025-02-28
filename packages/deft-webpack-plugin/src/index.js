@@ -182,8 +182,13 @@ class DeftWebpackPlugin {
                 result.on('error', () => {
                     process.exit(1);
                 })
-                result.on('exit', () => {
-                    callback();
+                result.on('exit', (code) => {
+                    if (code !== 0) {
+                        console.error(`Build failed with exit code ${code}`);
+                        process.exit(code);
+                    } else {
+                        callback();
+                    }
                 });
             });
         }
