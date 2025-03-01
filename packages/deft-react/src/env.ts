@@ -12,6 +12,7 @@ declare type Cursor = "default" | "context-menu" | "help" | "pointer" | "progres
     | "ew-resize" | "ns-resize" | "nesw-resize" | "nwse-resize" | "col-resize"
     | "row-resize" | "all-scroll" | "zoom-in" | "zoom-out"
 
+declare type EntryType = "text" | "password"
 
 declare interface DeftElementProps {
     onClick?: (event: IMouseEvent) => void,
@@ -62,6 +63,9 @@ declare interface EntryElementProps extends DeftElementProps {
     multipleLine ?: boolean,
     autoHeight ?: boolean,
     rows ?: number,
+    type ?: EntryType,
+    placeholder?: string,
+    placeholderStyle?: StyleProps,
 }
 
 declare interface TexteditElementProps extends DeftElementProps {
