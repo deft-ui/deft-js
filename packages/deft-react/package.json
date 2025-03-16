@@ -1,6 +1,6 @@
 {
   "name": "deft-react",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "",
   "typings": "dist/esm/types/index.d.ts",
   "main": "dist/deft-react.js",

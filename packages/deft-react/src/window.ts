@@ -91,4 +91,9 @@ export class DeftWindow extends Window {
         this.#pages.push(page);
         return page;
     }
+
+    getPages() {
+        return this.#pages.slice();
+    }
+
 }
