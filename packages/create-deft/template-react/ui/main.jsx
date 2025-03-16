@@ -12,12 +12,14 @@ function initWindow() {
     return window;
 }
 
-function main() {
-    const window = initWindow();
-    window.newPage(<App />)
+const window = initWindow();
+const element = <App />;
+const pages = window.getPages();
+if (pages && pages[0]) {
+    pages[0].update(element);
+} else {
+    window.newPage(element);
 }
-
-main();
-
-/// Hot reload support
+// Hot reload
+//@ts-ignore
 module.hot && module.hot.accept();

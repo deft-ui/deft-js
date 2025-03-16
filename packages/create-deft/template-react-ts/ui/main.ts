@@ -12,13 +12,14 @@ function initWindow(): DeftWindow {
     return window;
 }
 
-function main() {
-    const window = initWindow();
-    window.newPage(React.createElement(App))
+const window = initWindow();
+const element = React.createElement(App);
+const pages = window.getPages();
+if (pages && pages[0]) {
+    pages[0].update(element);
+} else {
+    window.newPage(element);
 }
-
-main();
-
-/// Hot reload support
+// Hot reload
 //@ts-ignore
 module.hot && module.hot.accept();
