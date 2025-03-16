@@ -27,6 +27,7 @@ export interface PageOptions {
 }
 
 export interface Page {
+    update(element: ReactNode, done ?: () => void): void;
     destroy(done ?: () => void): void;
 }
 

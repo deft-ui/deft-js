@@ -216,15 +216,20 @@ export function render(window: DeftWindow, element: ReactNode, guiContainer: Con
             doDestroy();
         }
     }
-    const appRoot = React.createElement(PageRoot, {
-        window,
-        content: element,
-        root: guiContainer,
-        destroy,
-    });
+    function update(element: ReactNode, callback?: () => void) {
+        const appRoot = React.createElement(PageRoot, {
+            window,
+            content: element,
+            root: guiContainer,
+            destroy,
+        });
+        DeftRenderer.updateContainer(appRoot, root, null, callback);
+    }
 
-    DeftRenderer.updateContainer(appRoot, root, null, callback);
+    update(element, callback);
+
     return {
+        update,
         destroy,
     }
 }
