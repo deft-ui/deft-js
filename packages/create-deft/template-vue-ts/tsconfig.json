@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "module": "es6",
+    "target": "es5",
+    "jsx": "preserve",
+    "importHelpers": true,
+    "allowJs": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "ui/*"
+      ]
+    },
+    "lib": [
+      "esnext"
+    ]
+  },
+  "include": [
+    "ui",
+    "node_modules/deft-sys/deft.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

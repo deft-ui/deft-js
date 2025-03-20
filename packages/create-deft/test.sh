@@ -26,3 +26,4 @@ test_tpl react-ts
 test_tpl vanilla-ts
 test_tpl react
 test_tpl vanilla
+test_tpl vue-ts

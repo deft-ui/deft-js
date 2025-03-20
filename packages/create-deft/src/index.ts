@@ -76,6 +76,23 @@ const FRAMEWORKS: Framework[] = [
     ],
   },
   {
+    name: 'vue',
+    display: 'Vue',
+    color: blue,
+    variants: [
+      {
+        name: 'vue-ts',
+        display: 'TypeScript',
+        color: blue,
+      },
+      // {
+      //   name: 'react',
+      //   display: 'JavaScript',
+      //   color: yellow,
+      // },
+    ],
+  },
+  {
     name: 'vanilla',
     display: 'Vanilla',
     color: yellow,
