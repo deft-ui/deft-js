@@ -85,11 +85,11 @@ const FRAMEWORKS: Framework[] = [
         display: 'TypeScript',
         color: blue,
       },
-      // {
-      //   name: 'react',
-      //   display: 'JavaScript',
-      //   color: yellow,
-      // },
+      {
+        name: 'vue',
+        display: 'JavaScript',
+        color: yellow,
+      },
     ],
   },
   {
