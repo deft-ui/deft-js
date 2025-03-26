@@ -3,6 +3,11 @@ const child_process = require('child_process');
 class DeftWebpackPlugin {
     constructor(options) {
         this.options = options || {};
+        /**
+         *
+         * @type {AbortController[]}
+         */
+        this.abortControllers = [];
     }
     _displayMenus() {
         console.log("");
@@ -103,6 +108,8 @@ class DeftWebpackPlugin {
             throw new Error(`unsupported dev platform: ${platform}, available platforms: ${availablePlatforms}`);
         }
         console.log(`Run command: ${cmd}`);
+        const abortController = new AbortController();
+        this.abortControllers.push(abortController);
         const result = child_process.spawn(cmd, {
             env: {
                 ...process.env,
@@ -111,8 +118,25 @@ class DeftWebpackPlugin {
             stdio: "inherit",
             cwd: ".",
             shell: true,
+            signal: abortController.signal,
         });
-        result.on('exit', callback);
+        result.on('exit', () => {
+            try {
+                callback && callback();
+            } finally {
+                const idx = this.abortControllers.indexOf(abortController);
+                if (idx >= 0) {
+                    this.abortControllers.splice(idx, 1);
+                }
+            }
+        });
+    }
+
+    _exit(code) {
+        for (const ac of this.abortControllers) {
+            ac.abort();
+        }
+        process.exit(code);
     }
 
     _initOnce(options) {
@@ -130,11 +154,11 @@ class DeftWebpackPlugin {
         const actionMap = {
             a: () => this._runPlatform(options,"android-arm64", runCallback),
             r: () => this._runPlatform(options,"host", runCallback),
-            q: () => process.exit(0),
+            q: () => this._exit(0),
         }
         stdin.on('data', data => {
             if (data == "\u0003") {
-                process.exit(1);
+                this._exit(1);
             }
             const action = actionMap[data];
             if (action) {
