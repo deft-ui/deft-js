@@ -94,6 +94,11 @@ class DeftWebpackPlugin {
         }
     }
 
+    _parseCommand(cmd) {
+        //TODO support quote char
+        return cmd.split(" ");
+    }
+
     _runPlatform(options, platform, callback) {
         const {port} = options?.devServer || {};
         if (!port) {
@@ -110,16 +115,20 @@ class DeftWebpackPlugin {
         console.log(`Run command: ${cmd}`);
         const abortController = new AbortController();
         this.abortControllers.push(abortController);
-        const result = child_process.spawn(cmd, {
-            env: {
-                ...process.env,
-                DEFT_JS_URL: serverUrl,
-            },
-            stdio: "inherit",
-            cwd: ".",
-            shell: true,
-            signal: abortController.signal,
-        });
+        const cmdAndArgs = this._parseCommand(cmd);
+        const result = child_process.spawn(
+            cmdAndArgs[0],
+            cmdAndArgs.slice(1),
+            {
+                env: {
+                    ...process.env,
+                    DEFT_JS_URL: serverUrl,
+                },
+                stdio: "inherit",
+                cwd: ".",
+                killSignal: "SIGKILL",
+                signal: abortController.signal,
+            });
         result.on('exit', () => {
             try {
                 callback && callback();
