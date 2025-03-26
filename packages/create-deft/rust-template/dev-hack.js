@@ -4,6 +4,7 @@
     globalThis.document = {
         currentScript: {
             src: globalThis.location,
+            tagName: 'script',
         },
         createElement(tag) {
             if (tag === "script") {

@@ -72,7 +72,7 @@ module.exports = {
 }
 
 function writeWebpackConfig(dir, entry) {
-    const file = path.resolve(dir, 'webpack.config.js');
+    const file = path.resolve(dir, 'rspack.config.js');
     const content = generateWebpackConfig(entry);
     fs.writeFileSync(file, content);
 }

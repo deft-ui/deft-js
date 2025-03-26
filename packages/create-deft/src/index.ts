@@ -355,7 +355,7 @@ async function init() {
   copy(androidTemplateDir, root + "/android");
   const appId = androidResult.appId || argId;
   rewriteAndroidAppId(root, "android/app/build.gradle", appId);
-  rewriteAndroidAppId(root, "webpack.config.js", appId);
+  rewriteAndroidAppId(root, "rspack.config.js", appId);
 
   const cdProjectName = path.relative(cwd, root)
   console.log(`\nDone. Now run:\n`)
