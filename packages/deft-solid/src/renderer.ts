@@ -22,13 +22,13 @@ export const {
     createTextNode(text) {
         // console.log("create text", text);
         const el = new LabelElement();
-        el.text = text;
+        el.text = (text ?? "") + "";
         return el;
     },
     replaceText(node, text) {
         // console.log("replace text", node, text);
         //@ts-ignore
-        node.text = text;
+        node.text = (text ?? "") + "";
     },
     insertNode(parent, el, anchor) {
         if (!el || !parent) return
