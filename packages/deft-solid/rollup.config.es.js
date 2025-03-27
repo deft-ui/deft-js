@@ -1,4 +1,3 @@
-import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import {getBabelOutputPlugin} from '@rollup/plugin-babel'
 
@@ -12,7 +11,7 @@ export default {
         /^solid-js/.test(id) ||
         (/^@\/packages\/\w+$/.test(id) && !!parent),
     output: {
-        format: 'cjs',
+        format: 'esm',
         dir: './dist',
         name: '[entryName].js',
         paths: (id) => {
@@ -20,7 +19,6 @@ export default {
         },
     },
     plugins: [
-        commonjs(),
         typescript(),
         getBabelOutputPlugin({
             presets: ['@babel/preset-env'],
