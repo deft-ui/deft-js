@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
+    "declaration": true,
+    "declarationDir": "./dist/esm/types",
     "noImplicitAny": false,
     "module": "es6",
-    "target": "es5",
+    "target": "ESNext",
     "jsx": "preserve",
-    "jsxImportSource": "solid-js",
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,

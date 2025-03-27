@@ -1,19 +1,22 @@
 {
   "name": "deft-solid",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
-  "main": "dist/deft-solid.js",
+  "type": "module",
+  "main": "./dist/index/index.common.js",
+  "module": "./dist/index/index.module.js",
+  "types": "./dist/index/index.d.ts",
   "scripts": {
-    "build:es": "npx rollup -c rollup.config.es.js",
+    "build:es": "npx rollup -c rollup.config.js",
     "prepublish": "npm run build:es"
   },
   "peerDependencies": {
     "solid-js": "*"
   },
   "devDependencies": {
-    "tslib": "^2.8.1",
+    "rollup": "^4.21.3",
     "deft-sys": "^0.2.5",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-typescript": "^8.3.0"
+    "tslib": "^2.8.1",
+    "rollup-preset-solid": "^2.0.1"
   }
 }
