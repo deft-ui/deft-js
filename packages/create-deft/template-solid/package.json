@@ -1,0 +1,26 @@
+{
+  "name": "deft-solid-app",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "rspack serve --mode development",
+    "build": "rspack --mode development",
+    "build:android": "cross-env DEFT_PLATFORM=android-arm64 rspack --mode development"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.19.3",
+    "@babel/preset-env": "^7.19.4",
+    "@rspack/cli": "^1.2.8",
+    "@rspack/core": "^1.2.8",
+    "babel-loader": "^8.2.5",
+    "cross-env": "^7.0.3",
+    "babel-preset-solid": "^1.5.9",
+    "deft-webpack-plugin": "^0.1.9"
+  },
+  "dependencies": {
+    "deft-solid": "^1.0.5",
+    "deft-sys": "^0.2.5",
+    "solid-js": "^1.9.5"
+  }
+}

@@ -13,6 +13,7 @@ const {
   red,
   reset,
   yellow,
+  green,
 } = colors
 
 // Avoids autoconversion to number of the project name by defining that the args
@@ -87,6 +88,23 @@ const FRAMEWORKS: Framework[] = [
       },
       {
         name: 'vue',
+        display: 'JavaScript',
+        color: yellow,
+      },
+    ],
+  },
+  {
+    name: 'solid',
+    display: 'Solid',
+    color: green,
+    variants: [
+      {
+        name: 'solid-ts',
+        display: 'TypeScript',
+        color: blue,
+      },
+      {
+        name: 'solid',
         display: 'JavaScript',
         color: yellow,
       },

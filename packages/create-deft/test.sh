@@ -22,6 +22,8 @@ function test_tpl() {
 
 npm run build
 mkdir -p test
+test_tpl solid-ts
+test_tpl solid
 test_tpl react-ts
 test_tpl vanilla-ts
 test_tpl react
