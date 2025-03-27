@@ -1,6 +1,6 @@
 {
   "name": "deft-solid",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "type": "module",
   "main": "./dist/index/index.common.js",
@@ -10,6 +10,10 @@
     "build:es": "npx rollup -c rollup.config.js",
     "prepublish": "npm run build:es"
   },
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "peerDependencies": {
     "solid-js": "*"
   },
