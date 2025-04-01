@@ -1,6 +1,6 @@
 {
   "name": "deft-vue",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Write apps with deft and vue",
   "main": "dist/deft-vue.js",
   "scripts": {

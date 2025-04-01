@@ -51,12 +51,12 @@ type Comp<T, E> = import("vue").DefineComponent<
 
 declare type EntryType = "text" | "password"
 
-export const Container: Comp<{}>
+export const Container: Comp<{}, {}>
 export const Label: Comp<{
     text?: string,
     align?: 'left' | 'center' | 'right'
-}>
-export const Button: Comp<{}>
+}, {}>
+export const Button: Comp<{}, {}>
 export const Entry: Comp<{
     text?: string,
     multipleLine?: boolean,
@@ -70,11 +70,11 @@ export const Entry: Comp<{
 }>
 export const Image: Comp<{
     src?: string,
-}>
+}, {}>
 export const Scroll: Comp<{
     scrollY?: "auto" | "always" | "never",
     scrollX?: "auto" | "always" | "never",
 }, {
     scroll: (event: IScrollEvent) => void,
 }>
-export const Paragraph: Comp<{}>
+export const Paragraph: Comp<{}, {}>
