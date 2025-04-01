@@ -228,4 +228,8 @@ class DeftWebpackPlugin {
     }
 }
 
+DeftWebpackPlugin.isNativeComponent = (tag) => {
+    return ["label", "button", "container", "entry", "scroll", "image", "paragraph"].includes(tag);
+}
+
 module.exports = DeftWebpackPlugin;
