@@ -1,15 +1,16 @@
 {
   "name": "deft-vue",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Write apps with deft and vue",
   "main": "dist/deft-vue.js",
   "scripts": {
     "build:es": "npx rollup -c rollup.config.es.js",
-    "prepublish": "npm run build:es"
+    "prepublishOnly": "npm run build:es"
   },
   "files": [
     "dist",
-    "package.json"
+    "package.json",
+    "types"
   ],
   "dependencies": {
     "@babel/runtime": "^7.26.10",
