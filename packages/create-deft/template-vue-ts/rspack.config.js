@@ -47,6 +47,11 @@ module.exports = (env, argv) => {
             rules: [{
                 test: /\.vue$/,
                 loader: "vue-loader",
+                options: {
+                    compilerOptions: {
+                        isCustomElement: DeftWebpackPlugin.isNativeComponent,
+                    }
+                },
                 exclude: /node_modules/
             }, {
                 test: /\.js$/,

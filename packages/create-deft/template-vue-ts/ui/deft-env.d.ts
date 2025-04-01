@@ -1,4 +1,6 @@
 /// <reference types="deft-sys" />
+/// <reference types="deft-vue/types/index" />
+
 declare const console;
 
 declare module '*.vue' {

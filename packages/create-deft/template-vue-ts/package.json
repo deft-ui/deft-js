@@ -12,12 +12,12 @@
     "@vue/runtime-core": "^3.5.13",
     "@vueuse/core": "^13.0.0",
     "deft-sys": "^0.2.4",
-    "deft-vue": "^1.0.0",
+    "deft-vue": "^1.0.1",
     "vue": "^3.5.13"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "deft-webpack-plugin": "^0.1.6",
+    "deft-webpack-plugin": "^0.1.10",
     "@types/node": "^22.13.9",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
