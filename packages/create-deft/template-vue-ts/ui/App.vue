@@ -10,16 +10,16 @@ function onClick() {
 </script>
 
 <template>
-  <div :style="{
+  <container :style="{
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
     gap: 20,
   }">
     <logo />
-    <div>
+    <container>
       counter : {{counter}}
-    </div>
+    </container>
     <button :style="{
       borderRadius: 4,
       padding: '2 10',
@@ -28,5 +28,5 @@ function onClick() {
     }" @click="onClick">
       Increment
     </button>
-  </div>
+  </container>
 </template>
