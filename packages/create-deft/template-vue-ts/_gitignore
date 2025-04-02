@@ -28,3 +28,7 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+target
+.gradle
+build/
+libdeftapp.so
