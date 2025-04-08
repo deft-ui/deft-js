@@ -3,22 +3,23 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "dev": "rspack serve --mode development",
-    "build": "rspack --mode development",
-    "build:android": "cross-env DEFT_PLATFORM=android-arm64 rspack --mode development"
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode development",
+    "build:android": "cross-env DEFT_PLATFORM=android-arm64 webpack --mode development"
   },
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/preset-env": "^7.19.4",
-    "@rspack/cli": "^1.2.8",
-    "@rspack/core": "^1.2.8",
     "babel-loader": "^8.2.5",
     "cross-env": "^7.0.3",
     "ts-loader": "^9.4.1",
     "typescript": "^5.7.2",
     "babel-preset-solid": "^1.5.9",
-    "deft-webpack-plugin": "^0.1.9"
+    "deft-webpack-plugin": "^0.1.9",
+    "webpack": "5.91.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "5.0.4"
   },
   "dependencies": {
     "deft-solid": "^1.0.5",
