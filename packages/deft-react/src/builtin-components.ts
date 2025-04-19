@@ -16,6 +16,10 @@ export function updateNativeComponent(el, oldProps, props) {
             if (props[p] === oldProps[p]) {
                 continue;
             }
+            if (p == "className") {
+                el.class = v;
+                continue;
+            }
             try {
                 const setter = el[getSetterName(p)];
                 if (setter) {

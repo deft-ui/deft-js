@@ -20,23 +20,7 @@ export const Row = forwardRef<ContainerElement, ContainerElementProps>((props, r
 })
 
 export const Button = forwardRef<ButtonElement, ButtonElementProps>((props, ref) => {
-    const style = {
-        padding: "2 10",
-        borderRadius: 4,
-        border: "1 #6E7175",
-        background: "#31363B",
-        ...props.style,
-    }
-    const hoverStyle = {
-        border: "1 #3DAEE9",
-        background: "#334E5E",
-        ...props.hoverStyle,
-    }
-    const btnProps = {
-        ...props,
-        style,
-        hoverStyle,
-    }
+    const btnProps = {...props}
     delete btnProps.title;
 
     //@ts-ignore
@@ -46,12 +30,7 @@ export const Button = forwardRef<ButtonElement, ButtonElementProps>((props, ref)
 export const Entry = forwardRef<EntryElement, EntryElementProps>((props, ref) => {
     const ps = {
         ...props,
-        style: {
-            background: "#1B1E20",
-            border: "1 #5E6164",
-            padding: "1 4",
-            ...props?.style,
-        },
+        style: { ...props?.style },
     }
     //@ts-ignore
     return <entry ref={ref} {...ps} />

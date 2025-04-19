@@ -32,16 +32,10 @@ export interface Page {
 }
 
 export class DeftWindow extends Window {
-    #body: ContainerElement
     #pages: Page[] = []
 
     constructor(props: WindowAttrs) {
         super(props);
-        const body = new ContainerElement();
-        body.style = {
-            height: '100%',
-            width: '100%',
-        };
         const onKeyUp= (e: IKeyEvent)=> {
             // console.log("onKeyUp", e);
             if (e.detail.key == "GoBack") {
@@ -51,9 +45,7 @@ export class DeftWindow extends Window {
                 }
             }
         }
-        body.bindKeyUp(onKeyUp);
-        this.body = body;
-        this.#body = body;
+        this.body.bindKeyUp(onKeyUp);
     }
 
     toast(message: string, options?: ToastOptions) {
@@ -78,7 +70,7 @@ export class DeftWindow extends Window {
         };
         let page: Page;
         const close = () => {
-            this.#body.removeChild(pageEl);
+            this.body.removeChild(pageEl);
             const pageIdx = this.#pages.indexOf(page);
             if (pageIdx > -1) {
                 this.#pages.splice(pageIdx, 1);
@@ -86,7 +78,7 @@ export class DeftWindow extends Window {
                 console.log("page not found");
             }
         }
-        this.#body.addChild(pageEl);
+        this.body.addChild(pageEl);
         page = render(this, reactNode, pageEl, null, options.leaveStyle, close);
         this.#pages.push(page);
         return page;
