@@ -65,5 +65,8 @@ export const renderer = createRenderer<Element | null, Element | null>({
         const p = node.parent as ContainerBasedElement;
         // return node?.parent.children[node.parent.getChildIndex(node) + 1] || null
         return null;
+    },
+    setScopeId(el: Element | null, id: string) {
+        el?.setAttribute(id, "");
     }
 })
