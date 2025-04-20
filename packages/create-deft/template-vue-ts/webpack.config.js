@@ -63,6 +63,9 @@ module.exports = (env, argv) => {
                 exclude: /node_modules/,
                 options: {appendTsSuffixTo: [/\.vue$/]},
             }, {
+                test: /\.css$/,
+                use: [ 'deft-style-loader', 'css-loader', 'postcss-loader']
+            }, {
                 test: /\.(jpe?g|png|svg|gif)/i,
                 // use: 'inline-loader',
                 type: 'asset/inline',

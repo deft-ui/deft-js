@@ -7,7 +7,7 @@ function initWindow() {
     return window;
 }
 
-function createBody() {
+function createContent() {
     const container = new ContainerElement();
     container.style = {
         background: "#2a2a2a",
@@ -37,7 +37,7 @@ function createBody() {
 
 function main() {
     const window = initWindow();
-    window.body = createBody();
+    window.body.addChild(createContent());
 }
 
 main();

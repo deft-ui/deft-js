@@ -14,10 +14,4 @@ function initWindow() {
 }
 
 const window = initWindow();
-const body = new ContainerElement();
-body.style = {
-    color: '#fff',
-}
-window.body = body;
-
-renderer.createApp(App).mount(body);
+renderer.createApp(App).mount(window.body);
