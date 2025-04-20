@@ -34,6 +34,7 @@ declare interface DeftElementProps {
     onFocusShift?: (event: IVoidEvent) => void,
     onBoundsChange?: (event: IBoundsChangeEvent) => void,
 
+    className ?: string,
     autoFocus ?: boolean,
     style?: StyleProps,
     hoverStyle?: StyleProps,

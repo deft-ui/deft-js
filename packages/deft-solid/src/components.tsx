@@ -18,22 +18,8 @@ export const Row = (props: ContainerElementProps) => {
 }
 
 export const Button = (props: ButtonElementProps) => {
-    const style = {
-        padding: "2 10",
-        borderRadius: 4,
-        border: "1 #6E7175",
-        background: "#31363B",
-        ...props.style,
-    }
-    const hoverStyle = {
-        border: "1 #3DAEE9",
-        background: "#334E5E",
-        ...props.hoverStyle,
-    }
     const btnProps = {
         ...props,
-        style,
-        hoverStyle,
     }
     delete btnProps.title;
 
@@ -42,17 +28,8 @@ export const Button = (props: ButtonElementProps) => {
 }
 
 export const Entry = (props: EntryElementProps) => {
-    const ps = {
-        ...props,
-        style: {
-            background: "#1B1E20",
-            border: "1 #5E6164",
-            padding: "1 4",
-            ...props?.style,
-        },
-    }
     //@ts-ignore
-    return <entry {...ps} />
+    return <entry {...props} />
 }
 
 export const Textedit = (props: TexteditElementProps) => {
