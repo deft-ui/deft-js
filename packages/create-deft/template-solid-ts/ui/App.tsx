@@ -1,3 +1,4 @@
+import "./App.css"
 import {createEffect, createSignal} from "solid-js";
 import {Button, Container} from "deft-solid";
 
@@ -8,23 +9,11 @@ const App = () => {
         console.log('count is change:', getCount());
     });
 
-    return <Container style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        gap: 20,
-    }}>
+    return <Container className="app">
         <div>
             {" counter : " + getCount()}
         </div>
-        <Button style={{
-            borderRadius: 4,
-            padding: '2 10',
-        }} hoverStyle={{
-            backgroundColor: '#4b4e4f',
-        }} onClick={add}>
-            Increment
-        </Button>
+        <Button onClick={add}>Increment</Button>
     </Container>
 };
 

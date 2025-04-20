@@ -1,3 +1,5 @@
+import "./main.css"
+
 function initWindow() {
     const window = globalThis.mainWindow || (globalThis.mainWindow = new Window({}));
     window.title = "Deft App";
@@ -9,14 +11,7 @@ function initWindow() {
 
 function createContent() {
     const container = new ContainerElement();
-    container.style = {
-        background: "#2a2a2a",
-        color: "#FFF",
-        padding: 5,
-        gap: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-    };
+    container.className = "main";
 
     const label = new LabelElement();
     label.text = "Welcome to Your Deft App";

@@ -15,16 +15,8 @@ function initWindow(): Window {
 }
 
 const window = initWindow();
-const body = new ContainerElement();
-body.style = {
-  color: '#fff',
-}
-window.body = body;
 
-
-
-
-render(() => <App />, body);
+render(() => <App />, window.body);
 // Hot reload
 //@ts-ignore
 module.hot && module.hot.accept();

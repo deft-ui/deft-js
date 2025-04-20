@@ -24,7 +24,7 @@
     "webpack-dev-server": "5.0.4"
   },
   "dependencies": {
-    "deft-solid": "^1.0.5",
+    "deft-solid": "^1.1.0",
     "deft-sys": "^0.4.0",
     "solid-js": "^1.9.5"
   }

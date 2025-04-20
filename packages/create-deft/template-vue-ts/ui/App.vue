@@ -10,23 +10,22 @@ function onClick() {
 </script>
 
 <template>
-  <container :style="{
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-    gap: 20,
-  }">
+  <container class="app">
     <logo />
     <container>
       counter : {{counter}}
     </container>
-    <button :style="{
-      borderRadius: 4,
-      padding: '2 10',
-    }" :hoverStyle="{
-      backgroundColor: '#4b4e4f',
-    }" @click="onClick">
+    <button @click="onClick">
       Increment
     </button>
   </container>
 </template>
+
+<style scoped>
+.app {
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 20px;
+}
+</style>
