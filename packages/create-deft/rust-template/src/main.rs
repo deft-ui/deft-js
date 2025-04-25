@@ -10,7 +10,7 @@ struct MyApp {}
 impl IApp for MyApp {
     fn init_js_engine(&mut self, js_engine: &mut JsEngine) {
         // uncomment the following line to enable localstorage
-        // js_engine.enable_localstorage(Path::new("localstorage").to_path_buf());
+        // js_engine.enable_localstorage(env::current_exe().unwrap().parent().unwrap().join("localstorage"));
         js_engine
             .eval_module(include_str!("../dev-hack.js"), "dev-hack.js")
             .unwrap();
