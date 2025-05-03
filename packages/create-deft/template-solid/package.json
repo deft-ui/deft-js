@@ -14,7 +14,7 @@
     "babel-loader": "^8.2.5",
     "cross-env": "^7.0.3",
     "babel-preset-solid": "^1.5.9",
-    "deft-webpack-plugin": "^0.1.9",
+    "deft-webpack-plugin": "^0.2.0",
     "css-loader": "^7.1.2",
     "deft-style-loader": "^1.0.0",
     "postcss": "^8.5.3",

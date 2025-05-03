@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "deft-webpack-plugin": "^0.1.10",
+    "deft-webpack-plugin": "^0.2.0",
     "@types/node": "^22.13.9",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",

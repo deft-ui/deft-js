@@ -4,15 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-deft = "0.5.1"
+deft = "0.6.0"
 
 [build-dependencies]
 deft-build = { version = "0.2.0" }
-
-[features]
-tray = ["deft/tray"]
-x11 = ["deft/x11"]
-wayland = ["deft/wayland"]
 
 [lib]
 name = "deftapp"
