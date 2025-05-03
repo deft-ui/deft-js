@@ -25,7 +25,7 @@ class DeftWebpackPlugin {
         }
         const activityId = this.options.android.activityId || "deft_app.MainActivity";
         return [
-            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release --features x11",
+            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
             "cd android && ./gradlew assembleDebug",
             "adb install -t app/build/outputs/apk/debug/app-debug.apk",
             `adb reverse tcp:${port} tcp:${port}`,
@@ -35,7 +35,7 @@ class DeftWebpackPlugin {
 
     _getAndroidBuildCommand() {
         return [
-            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release --features x11",
+            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
             "cd android && ./gradlew assembleDebug", //TODO release build?
         ].join(" && ");
     }
@@ -62,8 +62,8 @@ class DeftWebpackPlugin {
     _getDefaultRunCommands(serverUrl, port) {
         const commands = {
             "android-arm64": this._getAndroidRunCommand(port),
-            "linux-amd64": this._getCargoCommand("run", "linux-amd64", ["x11", "wayland"]),
-            "linux-arm64": this._getCargoCommand("run", "linux-arm64", ["x11", "wayland"]),
+            "linux-amd64": this._getCargoCommand("run", "linux-amd64"),
+            "linux-arm64": this._getCargoCommand("run", "linux-arm64"),
             "windows-amd64": this._getCargoCommand("run", "windows-amd64"),
             "darwin-amd64": this._getCargoCommand("run", "macos-amd64"),
             "darwin-arm64": this._getCargoCommand("run", "macos-arm64"),
@@ -75,8 +75,8 @@ class DeftWebpackPlugin {
     _getDefaultBuildCommands() {
         const commands = {
             "android-arm64": this._getAndroidBuildCommand(),
-            "linux-amd64": this._getCargoCommand("build", "linux-amd64", ["x11", "wayland"]),
-            "linux-arm64": this._getCargoCommand("build", "linux-arm64", ["x11", "wayland"]),
+            "linux-amd64": this._getCargoCommand("build", "linux-amd64"),
+            "linux-arm64": this._getCargoCommand("build", "linux-arm64"),
             "windows-amd64": this._getCargoCommand("build", "windows-amd64"),
             "darwin-amd64": this._getCargoCommand("build", "macos-amd64"),
             "darwin-arm64": this._getCargoCommand("build", "macos-arm64"),
