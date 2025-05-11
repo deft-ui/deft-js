@@ -217,6 +217,7 @@ class DeftWebpackPlugin {
     }
 
     async _runCommands(commands, options) {
+        commands = [].concat(commands);
         for (const command of commands) {
             await this._runCmd(command, options);
         }
