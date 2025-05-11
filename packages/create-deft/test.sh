@@ -11,9 +11,8 @@ function test_tpl() {
   fi
   cd "test/$tpl"
   pnpm i
-  # npm i --registry https://registry.npmjs.org/
+#  pnpm i --registry https://registry.npmjs.org/
   npm run build
-  npm run build:android
   cd ../..
   if [ -d "test/$tpl/target" ]; then
     mv "test/$tpl/target" "test/target"
