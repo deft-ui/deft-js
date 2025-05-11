@@ -143,7 +143,6 @@ const defaultTargetDir = 'deft-project'
 async function init() {
   const argTargetDir = formatTargetDir(argv._[0])
   const argTemplate = argv.template || argv.t
-  const argId = argv.id;
 
   const help = argv.help
   if (help) {
@@ -273,31 +272,6 @@ async function init() {
   const { framework, overwrite, packageName, variant } = result
 
 
-  let androidResult: prompts.Answers<'appId'>;
-  try {
-    androidResult = await prompts(
-        [
-          {
-            type: () => argId ? null : 'text',
-            name: 'appId',
-            message: reset('Input your android app identifier:'),
-            initial: () => "com." + toValidAndroidAppId(getProjectName()),
-            validate: (dir) =>
-                isValidAndroidAppId(dir) || 'Invalid app id',
-          }
-        ],
-        {
-          onCancel: () => {
-            throw new Error(red('✖') + ' Operation cancelled')
-          },
-        },
-    )
-  } catch (cancelled: any) {
-    console.log(cancelled.message)
-    return
-  }
-
-
   const root = path.join(cwd, targetDir)
 
   if (overwrite === 'yes') {
@@ -365,16 +339,6 @@ async function init() {
   )
   copy(rustTemplateDir, root);
 
-  const androidTemplateDir = path.resolve(
-      fileURLToPath(import.meta.url),
-      '../..',
-      `android-template`,
-  )
-  copy(androidTemplateDir, root + "/android");
-  const appId = androidResult.appId || argId;
-  rewriteAndroidAppId(root, "android/app/build.gradle", appId);
-  rewriteAndroidAppId(root, "webpack.config.js", appId);
-
   const cdProjectName = path.relative(cwd, root)
   console.log(`\nDone. Now run:\n`)
   if (root !== cwd) {
@@ -430,23 +394,6 @@ function toValidPackageName(projectName: string) {
     .replace(/^[._]/, '')
     .replace(/[^a-z\d\-~]+/g, '-')
 }
-
-function isValidAndroidAppId(projectName: string) {
-  return /^([a-zA-Z_]\w*)+([.][a-zA-Z_]\w*)+$/.test(
-      projectName,
-  )
-}
-
-function toValidAndroidAppId(projectName: string) {
-  return projectName
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, '_')
-      .replace(/^[._]/, '')
-      .replace(/-/g, '')
-      .replace(/[^a-z\d~]+/g, '_')
-}
-
 
 function copyDir(srcDir: string, destDir: string) {
   fs.mkdirSync(destDir, { recursive: true })

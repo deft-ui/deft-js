@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "webpack serve --mode development",
     "build": "webpack --mode development",
-    "build:android": "cross-env DEFT_PLATFORM=android-arm64 webpack --mode development"
+    "build:android": "cross-env DEFT_PLATFORM=android-arm64 webpack --mode development",
+    "build:ohos": "cross-env DEFT_PLATFORM=ohos-arm64 webpack --mode development",
+    "build:ohos-amd64": "cross-env DEFT_PLATFORM=ohos-amd64 webpack --mode development"
   },
   "dependencies": {
     "@babel/runtime": "^7.26.10",
@@ -17,7 +19,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "deft-webpack-plugin": "^0.2.0",
+    "deft-webpack-plugin": "^0.3.0",
     "@types/node": "^22.13.9",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",

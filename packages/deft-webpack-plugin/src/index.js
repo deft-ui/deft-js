@@ -1,20 +1,100 @@
 const child_process = require('child_process');
+const fs = require("node:fs");
+
+function hasDir(dir) {
+    try {
+        const stat = fs.statSync(dir);
+        return stat.isDirectory();
+    }  catch (e) {
+        return false;
+    }
+}
+
+function copySoFiles(srcDir, destDir) {
+    const files = fs.readdirSync(srcDir);
+    for (const f of files) {
+        if (f.endsWith('.so')) {
+            fs.copyFileSync(srcDir + '/' + f, destDir + '/' + f);
+        }
+    }
+}
+
+function getOhosBuildCommand(arch) {
+    const ohosDir = "ohos";
+    return [
+        () => {
+            if (!fs.existsSync(ohosDir)) {
+                throw new Error("ohos project not found! Please run 'deft init ohos' to initialize an ohos project");
+            }
+        },
+        `ohrs build --release --arch ${arch} --dist target/ohos-dist`,
+        () => {
+            const dirName = {aarch: 'arm64-v8a'}[arch] || arch;
+            const soDir = `target/ohos-dist/${dirName}`;
+            const outDir = `ohos/entry/libs/${dirName}`;
+            if (!fs.existsSync(outDir)) {
+                fs.mkdirSync(outDir, { recursive: true });
+            }
+            if (fs.existsSync(soDir)) {
+                copySoFiles(soDir, outDir);
+                console.log("\nPlease open ohos with DevEco Studio and run it manually\n");
+            } else {
+                console.error(`\nNo .so files found in ${soDir}.\n`);
+            }
+        }
+    ]
+}
 
 class DeftWebpackPlugin {
     constructor(options) {
-        this.options = options || {};
+        const allOptions = {};
+        const configFile = 'deft.config.json';
+        if (fs.existsSync(configFile)) {
+            Object.assign(allOptions, JSON.parse(fs.readFileSync(configFile, 'utf8')));
+        }
+        this.options = Object.assign(allOptions, options);
         /**
          *
          * @type {AbortController[]}
          */
         this.abortControllers = [];
+        const previewActions = [{
+            key: 'r',
+            desc: 'run on this device',
+            command: (options, callback) => this._runPlatform(options, "host", callback),
+        }];
+        if (hasDir("android")) {
+            previewActions.push({
+                key: 'a',
+                desc: 'run on connected android device',
+                command: (options, callback) => this._runPlatform(options,"android-arm64", callback),
+            })
+        }
+        if (hasDir("ohos")) {
+            previewActions.push({
+                key: 'h',
+                desc: 'build HarmonyOS app(arm64)',
+                command: (options, callback) => this._runPlatform(options,"ohos-arm64", callback)
+            });
+            previewActions.push({
+                key: 'e',
+                desc: 'build HarmonyOS app(x86_64)',
+                command: (options, callback) => this._runPlatform(options,"ohos-amd64", callback),
+            });
+        }
+        previewActions.push({
+            key: 'q',
+            desc: 'quit',
+            command: (_options, _callback) => process.exit(0),
+        })
+        this.previewActions = previewActions;
     }
     _displayMenus() {
         console.log("");
         console.log("==============================================");
-        console.log("Press r to run on this device");
-        console.log("Press a to run on connected android device");
-        console.log("Press q to quit");
+        for (const pc of this.previewActions) {
+            console.log(`Press ${pc.key} to ${pc.desc}`);
+        }
         console.log("==============================================");
     }
 
@@ -40,6 +120,19 @@ class DeftWebpackPlugin {
         ].join(" && ");
     }
 
+    _getOhosRunCommand(port, arch) {
+        // const appId = this.options.ohos?.appId;
+        // if (!appId) {
+        //     throw new Error("ohos.appId is missing");
+        // }
+        // const ability = this.options.ohos?.abilityId || "EntryAbility";
+        return getOhosBuildCommand(arch);
+    }
+
+    _getOhosBuildCommand(arch) {
+        return getOhosBuildCommand(arch);
+    }
+
     _getCargoCommand(cargoCmd, platform, features) {
         const targetMap = {
             "macos-amd64": "x86_64-apple-darwin",
@@ -62,6 +155,8 @@ class DeftWebpackPlugin {
     _getDefaultRunCommands(serverUrl, port) {
         const commands = {
             "android-arm64": this._getAndroidRunCommand(port),
+            "ohos-amd64": this._getOhosRunCommand(port, "x86_64"),
+            "ohos-arm64": this._getOhosRunCommand(port, "aarch"),
             "linux-amd64": this._getCargoCommand("run", "linux-amd64"),
             "linux-arm64": this._getCargoCommand("run", "linux-arm64"),
             "windows-amd64": this._getCargoCommand("run", "windows-amd64"),
@@ -75,6 +170,8 @@ class DeftWebpackPlugin {
     _getDefaultBuildCommands() {
         const commands = {
             "android-arm64": this._getAndroidBuildCommand(),
+            "ohos-amd64": this._getOhosBuildCommand("x86_64"),
+            "ohos-arm64": this._getOhosBuildCommand("aarch"),
             "linux-amd64": this._getCargoCommand("build", "linux-amd64"),
             "linux-arm64": this._getCargoCommand("build", "linux-arm64"),
             "windows-amd64": this._getCargoCommand("build", "windows-amd64"),
@@ -102,36 +199,59 @@ class DeftWebpackPlugin {
         }
         const serverUrl = `http://localhost:${port}`
         const runCommands = Object.assign(this._getDefaultRunCommands(serverUrl, port), this.options.runCommands || {});
-        const cmd = runCommands[platform];
-        if (!cmd) {
+        const runTasks = runCommands[platform];
+        if (!runTasks) {
             const availablePlatforms = Object.keys(runCommands).join(",");
             throw new Error(`unsupported dev platform: ${platform}, available platforms: ${availablePlatforms}`);
         }
-        console.log(`Run command: ${cmd}`);
-        const abortController = new AbortController();
-        this.abortControllers.push(abortController);
-        const result = child_process.spawn(
-            cmd,
-            {
-                env: {
-                    ...process.env,
-                    DEFT_JS_URL: serverUrl,
-                },
+        this._runCommands(runTasks, {
+            env: {
+                ...process.env,
+                DEFT_JS_URL: serverUrl,
+            },
+        }).then(() => {
+            callback();
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
+
+    async _runCommands(commands, options) {
+        for (const command of commands) {
+            await this._runCmd(command, options);
+        }
+    }
+
+    async _runCmd(cmd, options) {
+        if (typeof cmd === "function") {
+            cmd = cmd();
+        }
+        if (!cmd) {
+            return;
+        }
+        return new Promise((resolve, reject) => {
+            console.log(`Run command: ${cmd}`);
+            const abortController = new AbortController();
+            this.abortControllers.push(abortController);
+            const result = child_process.spawn(cmd, {
                 stdio: "inherit",
                 cwd: ".",
                 killSignal: "SIGKILL",
                 signal: abortController.signal,
                 shell: process.env.SHELL || true,
+                ...options,
             });
-        result.on('exit', () => {
-            try {
-                callback && callback();
-            } finally {
+            result.on('exit', (code) => {
+                if (code !== 0) {
+                    reject(new Error(`Process exit with code: ${code}\n`));
+                } else {
+                    resolve();
+                }
                 const idx = this.abortControllers.indexOf(abortController);
                 if (idx >= 0) {
                     this.abortControllers.splice(idx, 1);
                 }
-            }
+            });
         });
     }
 
@@ -151,21 +271,15 @@ class DeftWebpackPlugin {
         stdin.setRawMode(true);
         stdin.resume();
         stdin.setEncoding('utf8');
-        const runCallback = () => {
-            this._displayMenus();
-        }
-        const actionMap = {
-            a: () => this._runPlatform(options,"android-arm64", runCallback),
-            r: () => this._runPlatform(options,"host", runCallback),
-            q: () => this._exit(0),
-        }
         stdin.on('data', data => {
             if (data == "\u0003") {
                 this._exit(1);
             }
-            const action = actionMap[data];
+            const action = this.previewActions.find(cmd => cmd.key === data);
             if (action) {
-                action();
+                action.command(options, () => {
+                    this._displayMenus();
+                })
             } else {
                 console.log("Unknown action: ", data);
                 this._displayMenus();
@@ -195,27 +309,18 @@ class DeftWebpackPlugin {
                 const availablePlatforms = Object.keys(buildCommands).join(",");
                 throw new Error(`unsupported build platform: ${platform}, available build platforms: ${availablePlatforms}`);
             }
-            console.log(`Build command: ${cargoBuildCmd}`);
             compiler.hooks.afterEmit.tapAsync('DeftWebpackPlugin', (compilation, callback) => {
-                let result = child_process.spawn(cargoBuildCmd, {
+                this._runCommands(cargoBuildCmd, {
                     env: {
                         ...process.env,
                         DEFT_JS_DIR: outputDir,
                     },
-                    stdio: "inherit",
-                    cwd: ".",
-                    shell: process.env.SHELL || true,
-                });
-                result.on('error', () => {
+                }).then(() => {
+                    callback();
+                }).catch((error) => {
+                    console.error(error);
+                    console.error(`Build failed`);
                     process.exit(1);
-                })
-                result.on('exit', (code) => {
-                    if (code !== 0) {
-                        console.error(`Build failed with exit code ${code}`);
-                        process.exit(code);
-                    } else {
-                        callback();
-                    }
                 });
             });
         }

@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "webpack serve --mode development",
     "build": "webpack --mode development",
-    "build:android": "cross-env DEFT_PLATFORM=android-arm64 webpack --mode development"
+    "build:android": "cross-env DEFT_PLATFORM=android-arm64 webpack --mode development",
+    "build:ohos": "cross-env DEFT_PLATFORM=ohos-arm64 webpack --mode development",
+    "build:ohos-amd64": "cross-env DEFT_PLATFORM=ohos-amd64 webpack --mode development"
   },
   "license": "MIT",
   "devDependencies": {
@@ -16,7 +18,7 @@
     "ts-loader": "^9.4.1",
     "typescript": "^5.7.2",
     "babel-preset-solid": "^1.5.9",
-    "deft-webpack-plugin": "^0.2.0",
+    "deft-webpack-plugin": "^0.3.0",
     "css-loader": "^7.1.2",
     "deft-style-loader": "^1.0.0",
     "postcss": "^8.5.3",

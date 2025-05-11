@@ -30,7 +30,7 @@ function generatePackageJson(isTs) {
     "@babel/preset-react": "^7.24.1",
     "@types/react": "^18.3.3",
     "babel-loader": "^9.1.3",
-    "deft-webpack-plugin": "^0.2.0",
+    "deft-webpack-plugin": "^0.3.0",
     "css-loader": "^7.1.2",
     "deft-style-loader": "^1.0.0",
     "postcss": "^8.5.3",

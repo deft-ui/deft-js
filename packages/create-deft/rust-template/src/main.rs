@@ -34,3 +34,11 @@ fn android_main(android_app: deft::winit::platform::android::activity::AndroidAp
     let app = App::new(MyApp {});
     deft::android_bootstrap(android_app, app);
 }
+
+#[cfg(target_env = "ohos")]
+#[openharmony_ability_derive::ability]
+pub fn openharmony(openharmony_app: deft::winit::platform::ohos::ability::OpenHarmonyApp) {
+    let _ = deft_ohos_logger::init();
+    let app = App::new(MyApp {});
+    deft::ohos_bootstrap(openharmony_app, app);
+}

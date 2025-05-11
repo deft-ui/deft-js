@@ -1,6 +1,6 @@
 {
   "name": "create-deft",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "type": "module",
   "license": "MIT",
   "author": "Evan You, Kason Yang",
@@ -17,7 +17,6 @@
     "template-vue-ts",
     "template-solid",
     "template-solid-ts",
-    "android-template",
     "rust-template",
     "dist"
   ],
