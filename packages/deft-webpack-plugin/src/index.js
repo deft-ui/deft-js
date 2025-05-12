@@ -20,22 +20,22 @@ function copySoFiles(srcDir, destDir) {
     }
 }
 
-function ensureOhosNdkPath() {
-    const sdk = process.env.OHOS_SDK_HOME || process.env.OHOS_NDK_HOME;
+function ensureOhosSdkPath() {
+    const sdk = process.env.OHOS_SDK_HOME;
     if (!sdk) {
-        throw new Error('Missing OHOS_NDK_HOME environment');
+        throw new Error('Missing OHOS_SDK_HOME environment');
     }
     return sdk;
 }
 
 function copyCxxShared(target, destDir) {
-    const ndkDir = ensureOhosNdkPath();
-    const soFile = `${ndkDir}/native/llvm/lib/${target}/libc++_shared.so`;
+    const sdk = ensureOhosSdkPath();
+    const soFile = `${sdk}/native/llvm/lib/${target}/libc++_shared.so`;
     fs.copyFileSync(soFile, destDir + "/libc++_shared.so");
 }
 
 function getOhosEnv() {
-    const sdk = ensureOhosNdkPath();
+    const sdk = ensureOhosSdkPath();
     const devDcoHome = process.env.DEVECO_HOME;
     if (!devDcoHome) {
         throw new Error("Missing DEVECO_HOME environment");
