@@ -2,11 +2,7 @@ const path = require('path');
 const {VueLoaderPlugin} = require("vue-loader");
 const DeftWebpackPlugin = require("deft-webpack-plugin");
 
-const deftOptions = {
-    android: {
-        appId: "fun.kason.deft_demo",
-    }
-};
+
 
 
 const src = path.resolve(__dirname, 'ui');
@@ -41,7 +37,7 @@ module.exports = (env, argv) => {
         },
         plugins: [
             new VueLoaderPlugin(),
-            new DeftWebpackPlugin(deftOptions),
+            new DeftWebpackPlugin(),
         ],
         module: {
             rules: [{

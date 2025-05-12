@@ -1,11 +1,7 @@
 const path = require('path');
 const DeftWebpackPlugin = require("deft-webpack-plugin");
 
-const deftOptions = {
-    android: {
-        appId: "fun.kason.deft_demo",
-    }
-};
+
 
 module.exports = {
     entry: {
@@ -58,6 +54,6 @@ module.exports = {
         filename: '[name].js',
     },
     plugins: [
-        new DeftWebpackPlugin(deftOptions),
+        new DeftWebpackPlugin(),
     ],
 };
