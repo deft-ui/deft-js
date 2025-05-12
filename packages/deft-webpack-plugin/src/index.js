@@ -19,31 +19,6 @@ function copySoFiles(srcDir, destDir) {
     }
 }
 
-function getOhosBuildCommand(arch) {
-    const ohosDir = "ohos";
-    return [
-        () => {
-            if (!fs.existsSync(ohosDir)) {
-                throw new Error("ohos project not found! Please run 'deft init ohos' to initialize an ohos project");
-            }
-        },
-        `ohrs build --release --arch ${arch} --dist target/ohos-dist`,
-        () => {
-            const dirName = {aarch: 'arm64-v8a'}[arch] || arch;
-            const soDir = `target/ohos-dist/${dirName}`;
-            const outDir = `ohos/entry/libs/${dirName}`;
-            if (!fs.existsSync(outDir)) {
-                fs.mkdirSync(outDir, { recursive: true });
-            }
-            if (fs.existsSync(soDir)) {
-                copySoFiles(soDir, outDir);
-                console.log("\nPlease open ohos with DevEco Studio and run it manually\n");
-            } else {
-                console.error(`\nNo .so files found in ${soDir}.\n`);
-            }
-        }
-    ]
-}
 
 class DeftWebpackPlugin {
     constructor(options) {
@@ -98,6 +73,42 @@ class DeftWebpackPlugin {
         console.log("==============================================");
     }
 
+    _getOhosBuildCommand(platform) {
+        const ohosDir = "ohos";
+        const soDir = {
+            "ohos-amd64": "target/x86_64-unknown-linux-ohos/release",
+            "ohos-arm64": "target/aarch64-unknown-linux-ohos/release",
+        }[platform];
+        const outDir = {
+            "ohos-amd64": "ohos/entry/libs/x86_64",
+            "ohos-arm64": "ohos/entry/libs/arm64-v8a",
+        }[platform];
+        if (!soDir || !outDir) {
+            console.error("Unsupported platform", platform);
+            return [];
+        }
+        return [
+            () => {
+                if (!fs.existsSync(ohosDir)) {
+                    throw new Error("ohos project not found! Please run 'deft init ohos' to initialize an ohos project");
+                }
+                //TODO init env
+            },
+            this._getCargoCommand("build", platform),
+            () => {
+                if (!fs.existsSync(outDir)) {
+                    fs.mkdirSync(outDir, { recursive: true });
+                }
+                if (fs.existsSync(soDir)) {
+                    copySoFiles(soDir, outDir);
+                    console.log("\nPlease open ohos with DevEco Studio and run it manually\n");
+                } else {
+                    console.error(`\nNo .so files found in ${soDir}.\n`);
+                }
+            }
+        ]
+    }
+
     _getAndroidRunCommand(port) {
         const appId = this.options.android?.appId;
         if (!appId) {
@@ -126,11 +137,7 @@ class DeftWebpackPlugin {
         //     throw new Error("ohos.appId is missing");
         // }
         // const ability = this.options.ohos?.abilityId || "EntryAbility";
-        return getOhosBuildCommand(arch);
-    }
-
-    _getOhosBuildCommand(arch) {
-        return getOhosBuildCommand(arch);
+        return this._getOhosBuildCommand(arch);
     }
 
     _getCargoCommand(cargoCmd, platform, features) {
@@ -139,6 +146,8 @@ class DeftWebpackPlugin {
             "macos-arm64": "aarch64-apple-darwin",
             "linux-amd64": "x86_64-unknown-linux-gnu",
             "linux-arm64": "aarch64-unknown-linux-gnu",
+            "ohos-amd64": "x86_64-unknown-linux-ohos",
+            "ohos-arm64": "aarch64-unknown-linux-ohos",
             "windows-amd64": "x86_64-pc-windows-msvc",
         }
         const target = targetMap[platform];
@@ -155,8 +164,8 @@ class DeftWebpackPlugin {
     _getDefaultRunCommands(serverUrl, port) {
         const commands = {
             "android-arm64": this._getAndroidRunCommand(port),
-            "ohos-amd64": this._getOhosRunCommand(port, "x86_64"),
-            "ohos-arm64": this._getOhosRunCommand(port, "aarch"),
+            "ohos-amd64": this._getOhosRunCommand(port, "ohos-amd64"),
+            "ohos-arm64": this._getOhosRunCommand(port, "ohos-arm64"),
             "linux-amd64": this._getCargoCommand("run", "linux-amd64"),
             "linux-arm64": this._getCargoCommand("run", "linux-arm64"),
             "windows-amd64": this._getCargoCommand("run", "windows-amd64"),
@@ -170,8 +179,8 @@ class DeftWebpackPlugin {
     _getDefaultBuildCommands() {
         const commands = {
             "android-arm64": this._getAndroidBuildCommand(),
-            "ohos-amd64": this._getOhosBuildCommand("x86_64"),
-            "ohos-arm64": this._getOhosBuildCommand("aarch"),
+            "ohos-amd64": this._getOhosBuildCommand("ohos-amd64"),
+            "ohos-arm64": this._getOhosBuildCommand("ohos-arm64"),
             "linux-amd64": this._getCargoCommand("build", "linux-amd64"),
             "linux-arm64": this._getCargoCommand("build", "linux-arm64"),
             "windows-amd64": this._getCargoCommand("build", "windows-amd64"),
