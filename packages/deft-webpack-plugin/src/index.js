@@ -19,6 +19,35 @@ function copySoFiles(srcDir, destDir) {
     }
 }
 
+function getOhosEnv() {
+    const sdk = process.env.OHOS_SDK_HOME;
+    if (!sdk) {
+        throw new Error('Missing OHOS_SDK_HOME environment');
+    }
+    const listSplit = process.platform === 'win32' ? ";" : ":";
+    const ext = process.platform === 'win32' ? '.exe' : '';
+    const envPath = process.env.Path;
+    const ndk = `${sdk}/native`
+    return {
+        "Path": `${ndk}/llvm/bin${listSplit}${envPath}`,
+        "LIBCLANG_PATH": `${ndk}/llvm/lib`,
+        "CLANG_PATH": `${ndk}/llvm/bin/clang++${ext}`,
+        "CXXSTDLIB_X86_64_UNKNOWN_LINUX_OHOS": "c++",
+        "TARGET_CC": `${ndk}/llvm/bin/clang${ext}`,
+        "TARGET_CXX": `${ndk}/llvm/bin/clang++${ext}`,
+        "TARGET_AR": `${ndk}/llvm/bin/llvm-ar${ext}`,
+        "TARGET_OBJDUMP": `${ndk}/llvm/bin/llvm-objdump${ext}`,
+        "TARGET_OBJCOPY": `${ndk}/llvm/bin/llvm-objcopy${ext}`,
+        "TARGET_NM": `${ndk}/llvm/bin/llvm-nm${ext}`,
+        "TARGET_AS": `${ndk}/llvm/bin/llvm-as${ext}`,
+        "TARGET_LD": `${ndk}/llvm/bin/ld.lld${ext}`,
+        "TARGET_RANLIB": `${ndk}/llvm/bin/llvm-ranlib${ext}`,
+        "TARGET_STRIP": `${ndk}/llvm/bin/llvm-strip${ext}`,
+        "CARGO_TARGET_X86_64_UNKNOWN_LINUX_OHOS_LINKER": `${ndk}/llvm/bin/clang${ext}`,
+        "CARGO_ENCODED_RUSTFLAGS": `-Clink-args=--target=x86_64-linux-ohos --sysroot=${ndk}/sysroot -D__MUSL__`,
+    }
+}
+
 
 class DeftWebpackPlugin {
     constructor(options) {
@@ -92,9 +121,11 @@ class DeftWebpackPlugin {
                 if (!fs.existsSync(ohosDir)) {
                     throw new Error("ohos project not found! Please run 'deft init ohos' to initialize an ohos project");
                 }
-                //TODO init env
             },
-            this._getCargoCommand("build", platform),
+            {
+                env: getOhosEnv(),
+                command: this._getCargoCommand("build", platform),
+            },
             () => {
                 if (!fs.existsSync(outDir)) {
                     fs.mkdirSync(outDir, { recursive: true });
@@ -239,18 +270,28 @@ class DeftWebpackPlugin {
         if (!cmd) {
             return;
         }
+        let cmdEnv = {};
+        if (typeof cmd === "object") {
+            if (!cmd.command) {
+                return;
+            }
+            cmdEnv = cmd.env;
+            cmd = cmd.command;
+        }
         return new Promise((resolve, reject) => {
             console.log(`Run command: ${cmd}`);
             const abortController = new AbortController();
             this.abortControllers.push(abortController);
-            const result = child_process.spawn(cmd, {
+            const spawnOptions = {
                 stdio: "inherit",
                 cwd: ".",
                 killSignal: "SIGKILL",
                 signal: abortController.signal,
                 shell: process.env.SHELL || true,
                 ...options,
-            });
+            };
+            spawnOptions.env = Object.assign(spawnOptions.env || {}, cmdEnv);
+            const result = child_process.spawn(cmd, spawnOptions);
             result.on('exit', (code) => {
                 if (code !== 0) {
                     reject(new Error(`Process exit with code: ${code}\n`));
