@@ -1,11 +1,18 @@
 {
   "name": "deft-webpack-plugin",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Deft webpack plugin",
   "main": "src/index.js",
+  "files": [
+    "src",
+    "package.json"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kason Yang",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "picocolors": "^1.1.1"
+  }
 }

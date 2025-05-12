@@ -1,5 +1,6 @@
 const child_process = require('child_process');
 const fs = require("node:fs");
+const colors = require("picocolors");
 
 function hasDir(dir) {
     try {
@@ -19,31 +20,58 @@ function copySoFiles(srcDir, destDir) {
     }
 }
 
-function getOhosBuildCommand(arch) {
-    const ohosDir = "ohos";
-    return [
-        () => {
-            if (!fs.existsSync(ohosDir)) {
-                throw new Error("ohos project not found! Please run 'deft init ohos' to initialize an ohos project");
-            }
-        },
-        `ohrs build --release --arch ${arch} --dist target/ohos-dist`,
-        () => {
-            const dirName = {aarch: 'arm64-v8a'}[arch] || arch;
-            const soDir = `target/ohos-dist/${dirName}`;
-            const outDir = `ohos/entry/libs/${dirName}`;
-            if (!fs.existsSync(outDir)) {
-                fs.mkdirSync(outDir, { recursive: true });
-            }
-            if (fs.existsSync(soDir)) {
-                copySoFiles(soDir, outDir);
-                console.log("\nPlease open ohos with DevEco Studio and run it manually\n");
-            } else {
-                console.error(`\nNo .so files found in ${soDir}.\n`);
-            }
-        }
-    ]
+function ensureOhosNdkPath() {
+    const sdk = process.env.OHOS_SDK_HOME || process.env.OHOS_NDK_HOME;
+    if (!sdk) {
+        throw new Error('Missing OHOS_NDK_HOME environment');
+    }
+    return sdk;
 }
+
+function copyCxxShared(target, destDir) {
+    const ndkDir = ensureOhosNdkPath();
+    const soFile = `${ndkDir}/native/llvm/lib/${target}/libc++_shared.so`;
+    fs.copyFileSync(soFile, destDir + "/libc++_shared.so");
+}
+
+function getOhosEnv() {
+    const sdk = ensureOhosNdkPath();
+    const devDcoHome = process.env.DEVECO_HOME;
+    if (!devDcoHome) {
+        throw new Error("Missing DEVECO_HOME environment");
+    }
+    const ext = process.platform === 'win32' ? '.exe' : '';
+    const ndk = `${sdk}/native`
+    const binPaths = [
+        `${devDcoHome}/jbr/bin`,
+        `${ndk}/llvm/bin`,
+        `${sdk}/toolchains`,
+        `${devDcoHome}/tools/ohpm/bin`,
+        `${devDcoHome}/tools/hvigor/bin`,
+        process.env.Path,
+    ].join(process.platform === 'win32' ? ";" : ":");
+
+    return {
+        "DEVECO_SDK_HOME": `${devDcoHome}/sdk`,
+        "Path": binPaths,
+        "LIBCLANG_PATH": `${ndk}/llvm/lib`,
+        "CLANG_PATH": `${ndk}/llvm/bin/clang++${ext}`,
+        "CXXSTDLIB_X86_64_UNKNOWN_LINUX_OHOS": "c++",
+        "TARGET_CC": `${ndk}/llvm/bin/clang${ext}`,
+        "TARGET_CXX": `${ndk}/llvm/bin/clang++${ext}`,
+        "TARGET_AR": `${ndk}/llvm/bin/llvm-ar${ext}`,
+        "TARGET_OBJDUMP": `${ndk}/llvm/bin/llvm-objdump${ext}`,
+        "TARGET_OBJCOPY": `${ndk}/llvm/bin/llvm-objcopy${ext}`,
+        "TARGET_NM": `${ndk}/llvm/bin/llvm-nm${ext}`,
+        "TARGET_AS": `${ndk}/llvm/bin/llvm-as${ext}`,
+        "TARGET_LD": `${ndk}/llvm/bin/ld.lld${ext}`,
+        "TARGET_RANLIB": `${ndk}/llvm/bin/llvm-ranlib${ext}`,
+        "TARGET_STRIP": `${ndk}/llvm/bin/llvm-strip${ext}`,
+        "CARGO_TARGET_X86_64_UNKNOWN_LINUX_OHOS_LINKER": `${ndk}/llvm/bin/clang${ext}`,
+        "CARGO_ENCODED_RUSTFLAGS": `-Clink-args=--target=x86_64-linux-ohos --sysroot=${ndk}/sysroot -D__MUSL__`,
+    }
+}
+
 
 class DeftWebpackPlugin {
     constructor(options) {
@@ -66,19 +94,19 @@ class DeftWebpackPlugin {
         if (hasDir("android")) {
             previewActions.push({
                 key: 'a',
-                desc: 'run on connected android device',
+                desc: 'run on the connected android device(arm64)',
                 command: (options, callback) => this._runPlatform(options,"android-arm64", callback),
             })
         }
         if (hasDir("ohos")) {
             previewActions.push({
                 key: 'h',
-                desc: 'build HarmonyOS app(arm64)',
+                desc: 'run on the connected HarmonyOS device(arm64)',
                 command: (options, callback) => this._runPlatform(options,"ohos-arm64", callback)
             });
             previewActions.push({
                 key: 'e',
-                desc: 'build HarmonyOS app(x86_64)',
+                desc: 'run on the connected HarmonyOS device(x86_64)',
                 command: (options, callback) => this._runPlatform(options,"ohos-amd64", callback),
             });
         }
@@ -91,11 +119,62 @@ class DeftWebpackPlugin {
     }
     _displayMenus() {
         console.log("");
-        console.log("==============================================");
+        console.log("----------------------------------------------------------");
         for (const pc of this.previewActions) {
-            console.log(`Press ${pc.key} to ${pc.desc}`);
+            console.log(`Press ${colors.green(pc.key)} to ${pc.desc}`);
         }
-        console.log("==============================================");
+        console.log("----------------------------------------------------------");
+    }
+
+    _getOhosBuildCommand(platform) {
+        const ohosDir = "ohos";
+        const sysTarget = {
+            "ohos-amd64": "x86_64-linux-ohos",
+            "ohos-arm64": "aarch64-linux-ohos",
+        }[platform];
+        const soDir = {
+            "ohos-amd64": "target/x86_64-unknown-linux-ohos/release",
+            "ohos-arm64": "target/aarch64-unknown-linux-ohos/release",
+        }[platform];
+        const outDir = {
+            "ohos-amd64": "ohos/entry/libs/x86_64",
+            "ohos-arm64": "ohos/entry/libs/arm64-v8a",
+        }[platform];
+        if (!soDir || !outDir) {
+            console.error("Unsupported platform", platform);
+            return [];
+        }
+        const command = [
+            "cd ohos",
+            "ohpm install",
+            "hvigorw --mode module -p module=entry@default -p product=default -p requiredDeviceType=phone assembleHap",
+        ].join(" && ");
+        return [
+            () => {
+                if (!fs.existsSync(ohosDir)) {
+                    throw new Error("ohos project not found! Please run 'deft init ohos' to initialize an ohos project");
+                }
+            },
+            {
+                env: getOhosEnv(),
+                command: this._getCargoCommand("build", platform),
+            },
+            () => {
+                if (!fs.existsSync(outDir)) {
+                    fs.mkdirSync(outDir, { recursive: true });
+                }
+                if (fs.existsSync(soDir)) {
+                    copySoFiles(soDir, outDir);
+                    copyCxxShared(sysTarget, outDir);
+                } else {
+                    console.error(`\nNo .so files found in ${soDir}.\n`);
+                }
+            },
+            {
+                env: getOhosEnv(),
+                command,
+            }
+        ]
     }
 
     _getAndroidRunCommand(port) {
@@ -121,16 +200,19 @@ class DeftWebpackPlugin {
     }
 
     _getOhosRunCommand(port, arch) {
-        // const appId = this.options.ohos?.appId;
-        // if (!appId) {
-        //     throw new Error("ohos.appId is missing");
-        // }
-        // const ability = this.options.ohos?.abilityId || "EntryAbility";
-        return getOhosBuildCommand(arch);
-    }
-
-    _getOhosBuildCommand(arch) {
-        return getOhosBuildCommand(arch);
+        const appId = this.options.ohos?.appId;
+        if (!appId) {
+            throw new Error("ohos.appId is missing");
+        }
+        const ability = this.options.ohos?.abilityId || "EntryAbility";
+        const env = getOhosEnv();
+        const command = [
+            "hdc app install -r ohos/entry/build/default/outputs/default/entry-default-unsigned.hap",
+            `hdc rport tcp:${port} tcp:${port}`,
+            `hdc shell aa force-stop ${appId}`,
+            `hdc shell aa start -a ${ability} -b ${appId}`,
+        ].join(" && ");
+        return this._getOhosBuildCommand(arch).concat([{ env, command }]);
     }
 
     _getCargoCommand(cargoCmd, platform, features) {
@@ -139,6 +221,8 @@ class DeftWebpackPlugin {
             "macos-arm64": "aarch64-apple-darwin",
             "linux-amd64": "x86_64-unknown-linux-gnu",
             "linux-arm64": "aarch64-unknown-linux-gnu",
+            "ohos-amd64": "x86_64-unknown-linux-ohos",
+            "ohos-arm64": "aarch64-unknown-linux-ohos",
             "windows-amd64": "x86_64-pc-windows-msvc",
         }
         const target = targetMap[platform];
@@ -155,8 +239,8 @@ class DeftWebpackPlugin {
     _getDefaultRunCommands(serverUrl, port) {
         const commands = {
             "android-arm64": this._getAndroidRunCommand(port),
-            "ohos-amd64": this._getOhosRunCommand(port, "x86_64"),
-            "ohos-arm64": this._getOhosRunCommand(port, "aarch"),
+            "ohos-amd64": this._getOhosRunCommand(port, "ohos-amd64"),
+            "ohos-arm64": this._getOhosRunCommand(port, "ohos-arm64"),
             "linux-amd64": this._getCargoCommand("run", "linux-amd64"),
             "linux-arm64": this._getCargoCommand("run", "linux-arm64"),
             "windows-amd64": this._getCargoCommand("run", "windows-amd64"),
@@ -170,8 +254,8 @@ class DeftWebpackPlugin {
     _getDefaultBuildCommands() {
         const commands = {
             "android-arm64": this._getAndroidBuildCommand(),
-            "ohos-amd64": this._getOhosBuildCommand("x86_64"),
-            "ohos-arm64": this._getOhosBuildCommand("aarch"),
+            "ohos-amd64": this._getOhosBuildCommand("ohos-amd64"),
+            "ohos-arm64": this._getOhosBuildCommand("ohos-arm64"),
             "linux-amd64": this._getCargoCommand("build", "linux-amd64"),
             "linux-arm64": this._getCargoCommand("build", "linux-arm64"),
             "windows-amd64": this._getCargoCommand("build", "windows-amd64"),
@@ -230,18 +314,28 @@ class DeftWebpackPlugin {
         if (!cmd) {
             return;
         }
+        let cmdEnv = {};
+        if (typeof cmd === "object") {
+            if (!cmd.command) {
+                return;
+            }
+            cmdEnv = cmd.env;
+            cmd = cmd.command;
+        }
         return new Promise((resolve, reject) => {
             console.log(`Run command: ${cmd}`);
             const abortController = new AbortController();
             this.abortControllers.push(abortController);
-            const result = child_process.spawn(cmd, {
+            const spawnOptions = {
                 stdio: "inherit",
                 cwd: ".",
                 killSignal: "SIGKILL",
                 signal: abortController.signal,
                 shell: process.env.SHELL || true,
                 ...options,
-            });
+            };
+            spawnOptions.env = Object.assign(spawnOptions.env || {}, cmdEnv);
+            const result = child_process.spawn(cmd, spawnOptions);
             result.on('exit', (code) => {
                 if (code !== 0) {
                     reject(new Error(`Process exit with code: ${code}\n`));
