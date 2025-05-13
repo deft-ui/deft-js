@@ -42,6 +42,7 @@ function getOhosEnv(platform) {
     ].join(process.platform === 'win32' ? ";" : ":");
 
     return {
+        OHOS_NDK_HOME: sdk,
         "DEVECO_SDK_HOME": `${devDcoHome}/sdk`,
         "Path": binPaths,
         "LIBCLANG_PATH": `${ndk}/llvm/lib`,
