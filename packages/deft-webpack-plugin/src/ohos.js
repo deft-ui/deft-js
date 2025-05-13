@@ -38,13 +38,15 @@ function getOhosEnv(platform) {
         `${sdk}/toolchains`,
         `${devDcoHome}/tools/ohpm/bin`,
         `${devDcoHome}/tools/hvigor/bin`,
-        process.env.Path,
+        process.env.PATH,
     ].join(process.platform === 'win32' ? ";" : ":");
 
     return {
         OHOS_NDK_HOME: sdk,
-        "DEVECO_SDK_HOME": `${devDcoHome}/sdk`,
-        "Path": binPaths,
+        NODE_HOME: `${devDcoHome}/tools/node`,
+        JAVA_HOME: `${devDcoHome}/jbr`,
+        DEVECO_SDK_HOME: `${devDcoHome}/sdk`,
+        PATH: binPaths,
         "LIBCLANG_PATH": `${ndk}/llvm/lib`,
         "CLANG_PATH": `${ndk}/llvm/bin/clang++${ext}`,
         [`CXXSTDLIB_${rustEnvTarget}`]: "c++",
