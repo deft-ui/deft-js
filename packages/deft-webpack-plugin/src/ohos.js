@@ -32,8 +32,9 @@ function getOhosEnv(platform) {
     }
     const ext = process.platform === 'win32' ? '.exe' : '';
     const ndk = `${sdk}/native`
+    const javaHome = process.platform === "darwin" ? `${devDcoHome}/jbr/Contents/Home` : `${devDcoHome}/jbr`;
     const binPaths = [
-        `${devDcoHome}/jbr/bin`,
+        `${javaHome}/bin`,
         `${ndk}/llvm/bin`,
         `${sdk}/toolchains`,
         `${devDcoHome}/tools/ohpm/bin`,
@@ -44,7 +45,7 @@ function getOhosEnv(platform) {
     return {
         OHOS_NDK_HOME: sdk,
         NODE_HOME: `${devDcoHome}/tools/node`,
-        JAVA_HOME: `${devDcoHome}/jbr`,
+        JAVA_HOME: javaHome,
         DEVECO_SDK_HOME: `${devDcoHome}/sdk`,
         PATH: binPaths,
         "LIBCLANG_PATH": `${ndk}/llvm/lib`,
