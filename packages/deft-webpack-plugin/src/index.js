@@ -93,18 +93,20 @@ class DeftWebpackPlugin {
     }
 
     _getAndroidRunCommand(port) {
-        const appId = this.options.android?.appId;
-        if (!appId) {
-            throw new Error("android.appId is missing");
+        return () => {
+            const appId = this.options.android?.appId;
+            if (!appId) {
+                throw new Error("android.appId is missing");
+            }
+            const activityId = this.options.android.activityId || "deft_app.MainActivity";
+            return [
+                "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
+                "cd android && ./gradlew assembleDebug",
+                "adb install -t app/build/outputs/apk/debug/app-debug.apk",
+                `adb reverse tcp:${port} tcp:${port}`,
+                `adb shell am start ${appId}/${activityId}`,
+            ].join(" && ");
         }
-        const activityId = this.options.android.activityId || "deft_app.MainActivity";
-        return [
-            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
-            "cd android && ./gradlew assembleDebug",
-            "adb install -t app/build/outputs/apk/debug/app-debug.apk",
-            `adb reverse tcp:${port} tcp:${port}`,
-            `adb shell am start ${appId}/${activityId}`,
-        ].join(" && ");
     }
 
     _getAndroidBuildCommand() {
@@ -115,22 +117,24 @@ class DeftWebpackPlugin {
     }
 
     _getOhosRunCommand(port, platform) {
-        const appId = this.options.ohos?.appId;
-        if (!appId) {
-            throw new Error("ohos.appId is missing");
-        }
-        const ability = this.options.ohos?.abilityId || "EntryAbility";
-        const env = getOhosEnv(platform);
-        const command = [
-            "hdc app install -r ohos/entry/build/default/outputs/default/entry-default-unsigned.hap",
-            `hdc rport tcp:${port} tcp:${port}`,
-            `hdc shell aa force-stop ${appId}`,
-            `hdc shell aa start -a ${ability} -b ${appId}`,
-        ].join(" && ");
-        return this._getOhosBuildCommand(platform).concat([{ env, command }]);
+        return this._getOhosBuildCommand(platform).concat([
+            () => {
+                const appId = this.options.ohos?.appId;
+                if (!appId) {
+                    throw new Error("ohos.appId is missing");
+                }
+                const ability = this.options.ohos?.abilityId || "EntryAbility";
+                const env = getOhosEnv(platform);
+                const command = [
+                    "hdc app install -r ohos/entry/build/default/outputs/default/entry-default-unsigned.hap",
+                    `hdc rport tcp:${port} tcp:${port}`,
+                    `hdc shell aa force-stop ${appId}`,
+                    `hdc shell aa start -a ${ability} -b ${appId}`,
+                ].join(" && ");
+                return {env, command}
+            }
+        ]);
     }
-
-
 
     _getDefaultRunCommands(serverUrl, port) {
         const commands = {
