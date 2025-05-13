@@ -79,16 +79,16 @@ class DeftWebpackPlugin {
                 if (!fs.existsSync(ohosDir)) {
                     throw new Error("ohos project not found! Please run 'deft init ohos' to initialize an ohos project");
                 }
-            },
-            {
-                env: getOhosEnv(platform),
-                command: getCargoCommand("build", platform),
+                return {
+                    env: getOhosEnv(platform),
+                    command: getCargoCommand("build", platform),
+                }
             },
             () => distOhos(platform),
-            {
+            () => ({
                 env: getOhosEnv(platform),
                 command,
-            }
+            })
         ]
     }
 
