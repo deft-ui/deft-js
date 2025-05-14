@@ -3,6 +3,8 @@ const fs = require("node:fs");
 const colors = require("picocolors");
 const {getOhosEnv, distOhos} = require("./ohos.js");
 const {getCargoCommand} = require("./command.js");
+const {copyAndroidCxxShared, getAndroidEnv} = require("./android");
+const {copySoFiles} = require("./utils");
 
 function hasDir(dir) {
     try {
@@ -15,13 +17,13 @@ function hasDir(dir) {
 
 
 class DeftWebpackPlugin {
-    constructor(options) {
+    constructor() {
         const allOptions = {};
         const configFile = 'deft.config.json';
         if (fs.existsSync(configFile)) {
             Object.assign(allOptions, JSON.parse(fs.readFileSync(configFile, 'utf8')));
         }
-        this.options = Object.assign(allOptions, options);
+        this.options = allOptions;
         /**
          *
          * @type {AbortController[]}
@@ -37,6 +39,11 @@ class DeftWebpackPlugin {
                 key: 'a',
                 desc: 'run on the connected android device(arm64)',
                 command: (options, callback) => this._runPlatform(options,"android-arm64", callback),
+            })
+            previewActions.push({
+                key: 'x',
+                desc: 'run on the connected android device(x86_64)',
+                command: (options, callback) => this._runPlatform(options,"android-amd64", callback),
             })
         }
         if (hasDir("ohos")) {
@@ -92,28 +99,48 @@ class DeftWebpackPlugin {
         ]
     }
 
-    _getAndroidRunCommand(port) {
-        return () => {
-            const appId = this.options.android?.appId;
-            if (!appId) {
-                throw new Error("android.appId is missing");
+    _getAndroidRunCommand(port, platform) {
+        return this._getAndroidBuildCommand(platform).concat([
+            () => {
+                const appId = this.options.android?.appId;
+                if (!appId) {
+                    throw new Error("android.appId is missing");
+                }
+                const activityId = this.options.android.activityId || "deft_app.MainActivity";
+                return [
+                    "adb install -t android/app/build/outputs/apk/debug/app-debug.apk",
+                    `adb reverse tcp:${port} tcp:${port}`,
+                    `adb shell am start ${appId}/${activityId}`,
+                ].join(" && ");
             }
-            const activityId = this.options.android.activityId || "deft_app.MainActivity";
-            return [
-                "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
-                "cd android && ./gradlew assembleDebug",
-                "adb install -t app/build/outputs/apk/debug/app-debug.apk",
-                `adb reverse tcp:${port} tcp:${port}`,
-                `adb shell am start ${appId}/${activityId}`,
-            ].join(" && ");
-        }
+        ]);
     }
 
-    _getAndroidBuildCommand() {
+    _getAndroidBuildCommand(platform) {
+        const libDirName = {
+            "android-arm64": "arm64-v8a",
+            "android-amd64": "x86_64",
+        }[platform];
+        const soDir = {
+            "android-amd64": "target/x86_64-linux-android/release",
+            "android-arm64": "target/aarch64-linux-android/release",
+        }[platform];
+        if (!libDirName || !soDir) {
+            throw new Error("Unsupported platform: " + platform);
+        }
+        const libsDir = "android/app/src/main/jniLibs";
+        const soDistDir = `${libsDir}/${libDirName}`;
         return [
-            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
-            "cd android && ./gradlew assembleDebug", //TODO release build?
-        ].join(" && ");
+            {
+                env: getAndroidEnv(platform),
+                command: getCargoCommand("build", platform),
+            },
+            () => {
+                copySoFiles(soDir, soDistDir);
+                copyAndroidCxxShared(soDistDir, platform);
+            },
+            "cd android && ./gradlew assembleDebug",
+        ]
     }
 
     _getOhosRunCommand(port, platform) {
@@ -138,7 +165,8 @@ class DeftWebpackPlugin {
 
     _getDefaultRunCommands(serverUrl, port) {
         const commands = {
-            "android-arm64": this._getAndroidRunCommand(port),
+            "android-arm64": this._getAndroidRunCommand(port, "android-arm64"),
+            "android-amd64": this._getAndroidRunCommand(port, "android-amd64"),
             "ohos-amd64": this._getOhosRunCommand(port, "ohos-amd64"),
             "ohos-arm64": this._getOhosRunCommand(port, "ohos-arm64"),
             "linux-amd64": getCargoCommand("run", "linux-amd64"),
@@ -153,7 +181,8 @@ class DeftWebpackPlugin {
 
     _getDefaultBuildCommands() {
         const commands = {
-            "android-arm64": this._getAndroidBuildCommand(),
+            "android-arm64": this._getAndroidBuildCommand("android-arm64"),
+            "android-amd64": this._getAndroidBuildCommand("android-amd64"),
             "ohos-amd64": this._getOhosBuildCommand("ohos-amd64"),
             "ohos-arm64": this._getOhosBuildCommand("ohos-arm64"),
             "linux-amd64": getCargoCommand("build", "linux-amd64"),

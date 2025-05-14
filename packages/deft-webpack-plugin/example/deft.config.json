@@ -1,4 +1,7 @@
 {
+  "android": {
+    "appId": "fun.kason.deftdemo"
+  },
   "ohos": {
     "appId": "fun.kason.deftdemo"
   }

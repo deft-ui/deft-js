@@ -1,5 +1,6 @@
 const fs = require("node:fs");
 const {getRustTarget} = require("./config.js");
+const {copySoFiles} = require("./utils");
 
 function ensureOhosSdkPath() {
     const sdk = process.env.OHOS_SDK_HOME;
@@ -75,23 +76,11 @@ function distOhos(platform) {
         "ohos-amd64": "ohos/entry/libs/x86_64",
         "ohos-arm64": "ohos/entry/libs/arm64-v8a",
     }[platform];
-    if (!fs.existsSync(outDir)) {
-        fs.mkdirSync(outDir, { recursive: true });
-    }
     if (fs.existsSync(soDir)) {
         copySoFiles(soDir, outDir);
         copyCxxShared(getOhosSysTarget(platform), outDir);
     } else {
         console.error(`\nNo .so files found in ${soDir}.\n`);
-    }
-}
-
-function copySoFiles(srcDir, destDir) {
-    const files = fs.readdirSync(srcDir);
-    for (const f of files) {
-        if (f.endsWith('.so')) {
-            fs.copyFileSync(srcDir + '/' + f, destDir + '/' + f);
-        }
     }
 }
 
