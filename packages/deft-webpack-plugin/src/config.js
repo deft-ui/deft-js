@@ -1,4 +1,4 @@
-export function getRustTarget(platform) {
+function getRustTarget(platform) {
     return {
         "macos-amd64": "x86_64-apple-darwin",
         "macos-arm64": "aarch64-apple-darwin",
@@ -9,3 +9,7 @@ export function getRustTarget(platform) {
         "windows-amd64": "x86_64-pc-windows-msvc",
     }[platform]
 }
+
+module.exports = {
+    getRustTarget
+};

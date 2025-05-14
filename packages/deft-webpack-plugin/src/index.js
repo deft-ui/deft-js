@@ -3,6 +3,7 @@ const fs = require("node:fs");
 const colors = require("picocolors");
 const {getOhosEnv, distOhos} = require("./ohos.js");
 const {getCargoCommand} = require("./command.js");
+const {copyAndroidCxxShared, getAndroidEnv} = require("./android");
 
 function hasDir(dir) {
     try {
@@ -15,13 +16,13 @@ function hasDir(dir) {
 
 
 class DeftWebpackPlugin {
-    constructor(options) {
+    constructor() {
         const allOptions = {};
         const configFile = 'deft.config.json';
         if (fs.existsSync(configFile)) {
             Object.assign(allOptions, JSON.parse(fs.readFileSync(configFile, 'utf8')));
         }
-        this.options = Object.assign(allOptions, options);
+        this.options = allOptions;
         /**
          *
          * @type {AbortController[]}
@@ -93,27 +94,34 @@ class DeftWebpackPlugin {
     }
 
     _getAndroidRunCommand(port) {
-        return () => {
-            const appId = this.options.android?.appId;
-            if (!appId) {
-                throw new Error("android.appId is missing");
+        return this._getAndroidBuildCommand().concat([
+            () => {
+                const appId = this.options.android?.appId;
+                if (!appId) {
+                    throw new Error("android.appId is missing");
+                }
+                const activityId = this.options.android.activityId || "deft_app.MainActivity";
+                return [
+                    "adb install -t android/app/build/outputs/apk/debug/app-debug.apk",
+                    `adb reverse tcp:${port} tcp:${port}`,
+                    `adb shell am start ${appId}/${activityId}`,
+                ].join(" && ");
             }
-            const activityId = this.options.android.activityId || "deft_app.MainActivity";
-            return [
-                "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
-                "cd android && ./gradlew assembleDebug",
-                "adb install -t app/build/outputs/apk/debug/app-debug.apk",
-                `adb reverse tcp:${port} tcp:${port}`,
-                `adb shell am start ${appId}/${activityId}`,
-            ].join(" && ");
-        }
+        ]);
     }
 
     _getAndroidBuildCommand() {
+        const libsDir = "android/app/src/main/jniLibs"
         return [
-            "cargo ndk -t arm64-v8a -o android/app/src/main/jniLibs/ -p 30  build --release",
-            "cd android && ./gradlew assembleDebug", //TODO release build?
-        ].join(" && ");
+            {
+                env: getAndroidEnv(),
+                command: 'cargo build --release --target=aarch64-linux-android',
+            },
+            () => {
+                copyAndroidCxxShared(`${libsDir}/arm64-v8a`)
+            },
+            "cd android && ./gradlew assembleDebug",
+        ]
     }
 
     _getOhosRunCommand(port, platform) {
