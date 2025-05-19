@@ -131,10 +131,10 @@ class DeftWebpackPlugin {
         const libsDir = "android/app/src/main/jniLibs";
         const soDistDir = `${libsDir}/${libDirName}`;
         return [
-            {
+            () => ({
                 env: getAndroidEnv(platform),
                 command: getCargoCommand("build", platform),
-            },
+            }),
             () => {
                 copySoFiles(soDir, soDistDir);
                 copyAndroidCxxShared(soDistDir, platform);
