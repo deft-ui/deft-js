@@ -59,7 +59,7 @@ function getAndroidEnv(platform) {
     const ndk = ensureNdkDir();
     const hostPlatform = ensureHostDirName();
     //TODO support custom api version?
-    const sysTarget = ensureSysDirName(platform) + "30";
+    const sysTarget = ensureSysDirName(platform) + "23";
     const rustEnvTarget = getRustEnvTarget(platform);
 
     function llvmBin(name) {
