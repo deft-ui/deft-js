@@ -43,7 +43,6 @@ declare interface DeftElementProps {
 
 declare interface LabelElementProps extends DeftElementProps {
     text?: string,
-    align?: 'left' | 'center' | 'right',
     selection ?: number[],
 }
 
@@ -66,7 +65,6 @@ declare interface EntryElementProps extends DeftElementProps {
     rows ?: number,
     type ?: EntryType,
     placeholder?: string,
-    placeholderStyle?: StyleProps,
 }
 
 declare interface TexteditElementProps extends DeftElementProps {
