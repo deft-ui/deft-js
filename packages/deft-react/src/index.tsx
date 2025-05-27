@@ -1,6 +1,7 @@
 import "./env"
 
 export {DeftWindow} from "./window"
+export {registerNativeComponent} from "./builtin-components"
 export * from "./components"
 export * from "./packages/select/index";
 export * from "./packages/toast/index";

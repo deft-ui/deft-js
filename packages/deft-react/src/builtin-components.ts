@@ -1,3 +1,14 @@
+const nativeComponents = {
+    label: LabelElement,
+    button: ButtonElement,
+    container: ContainerElement,
+    entry: EntryElement,
+    scroll: ScrollElement,
+    textedit: TextEditElement,
+    image: ImageElement,
+    paragraph: ParagraphElement,
+}
+
 function getSetterName(prop) {
     return 'set' + prop.substring(0, 1).toUpperCase() + prop.substring(1);
 }
@@ -45,17 +56,15 @@ export function updateNativeComponent(el, oldProps, props) {
     }
 }
 
+export function registerNativeComponent(tag: string, element: Element) {
+    nativeComponents[tag] = element;
+}
+
 export function createNativeComponent(tag: string, props) {
-    const NativeElement = {
-        label: LabelElement,
-        button: ButtonElement,
-        container: ContainerElement,
-        entry: EntryElement,
-        scroll: ScrollElement,
-        textedit: TextEditElement,
-        image: ImageElement,
-        paragraph: ParagraphElement,
-    }[tag];
+    const NativeElement = nativeComponents[tag];
+    if (!NativeElement) {
+        throw new Error("Unknown native element:" + tag);
+    }
     const element = new NativeElement();
     updateNativeComponent(element, {}, props);
     return element;
