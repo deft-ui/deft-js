@@ -56,7 +56,9 @@ export const Label: Comp<{
     text?: string,
     align?: 'left' | 'center' | 'right'
 }, {}>
-export const Button: Comp<{}, {}>
+export const Button: Comp<{
+    disabled?: boolean,
+}, {}>
 export const Entry: Comp<{
     text?: string,
     multipleLine?: boolean,
@@ -78,3 +80,42 @@ export const Scroll: Comp<{
     scroll: (event: IScrollEvent) => void,
 }>
 export const Paragraph: Comp<{}, {}>
+
+export const RichText: Comp<{}, {}>
+
+export const TextInput: Comp<{
+    text?: string,
+    placeholder?: string,
+    type ?: EntryType,
+    disabled?: boolean,
+}, {
+    textChange: (event: ITextEvent) => void,
+    caretChange: (event: ICaretEvent) => void,
+}>
+
+export const TextEdit: Comp<{
+    text?: string,
+    placeholder?: string,
+    disabled?: boolean,
+}, {
+    textChange: (event: ITextEvent) => void,
+    caretChange: (event: ICaretEvent) => void,
+}>
+
+export const Checkbox: Comp<{
+    label ?: string,
+    checked?: boolean,
+    disabled?: boolean,
+}, {
+    change ?: () => void,
+}>
+
+export const Radio: Comp<{
+    label ?: string,
+    checked?: boolean,
+    disabled?: boolean,
+}, {
+    change ?: () => void,
+}>
+
+export const RadioGroup: Comp<{}, {}>

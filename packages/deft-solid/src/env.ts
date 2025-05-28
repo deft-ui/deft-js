@@ -50,6 +50,7 @@ declare interface LabelElementProps extends DeftElementProps {
 declare interface ButtonElementProps extends DeftElementProps {
     title ?: string,
     children?: any,
+    disabled ?: boolean,
 }
 
 
@@ -87,4 +88,39 @@ declare interface ScrollElementProps extends ContainerElementProps {
 
 declare interface ParagraphElementProps extends DeftElementProps {
 
+}
+
+declare interface RichTextElementProps extends DeftElementProps {
+
+}
+
+declare interface CheckboxElementProps extends DeftElementProps {
+    label ?: string,
+    checked ?: boolean,
+    disabled ?: boolean,
+    onChange?: (event: IVoidEvent) => void,
+}
+
+declare interface RadioElementProps extends DeftElementProps {
+    label ?: string,
+    checked ?: boolean,
+    disabled ?: boolean,
+    onChange?: (event: IVoidEvent) => void,
+}
+
+declare interface TextInputElementProps extends DeftElementProps {
+    text ?: string,
+    placeholder?: string,
+    type ?: EntryType,
+    disabled ?: boolean,
+    onCaretChange?: (event: ICaretEvent) => void,
+    onTextChange?: (event: ITextEvent) => void,
+}
+
+declare interface TextEditElementProps extends DeftElementProps {
+    text ?: string,
+    placeholder?: string,
+    disabled ?: boolean,
+    onCaretChange?: (event: ICaretEvent) => void,
+    onTextChange?: (event: ITextEvent) => void,
 }

@@ -7,6 +7,12 @@ const nativeComponents = {
     textedit: TextEditElement,
     image: ImageElement,
     paragraph: ParagraphElement,
+    "text-input": TextInputElement,
+    "text-edit": TextEditElement,
+    checkbox: CheckboxElement,
+    radio: RadioElement,
+    "radio-group": RadioGroupElement,
+    "rich-text": RichTextElement,
 }
 
 function getSetterName(prop) {

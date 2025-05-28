@@ -52,6 +52,12 @@ export function createNativeComponent(tag: string, props) {
         image: ImageElement,
         paragraph: ParagraphElement,
         div: ContainerElement,
+        "text-input": TextInputElement,
+        "text-edit": TextEditElement,
+        checkbox: CheckboxElement,
+        radio: RadioElement,
+        "radio-group": RadioGroupElement,
+        "rich-text": RichTextElement,
     }[tag];
     const element = new NativeElement();
     updateNativeComponent(element, {}, props);
