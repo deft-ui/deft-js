@@ -68,12 +68,6 @@ declare interface EntryElementProps extends DeftElementProps {
     placeholder?: string,
 }
 
-declare interface TexteditElementProps extends DeftElementProps {
-    text ?: string,
-    onCaretChange?: (event: ICaretEvent) => void,
-    onTextChange?: (event: ITextEvent) => void,
-}
-
 declare interface ImageElementProps extends DeftElementProps {
     src: string,
 }
@@ -104,6 +98,10 @@ declare interface RadioElementProps extends DeftElementProps {
     checked ?: boolean,
     disabled ?: boolean,
     onChange?: (event: IVoidEvent) => void,
+}
+
+declare interface RadioGroupElementProps extends DeftElementProps {
+
 }
 
 declare interface TextInputElementProps extends DeftElementProps {

@@ -108,6 +108,11 @@ declare interface RadioElementProps extends DeftElementProps {
     onChange?: (event: IVoidEvent) => void,
 }
 
+declare interface RadioGroupElementProps extends DeftElementProps {
+
+}
+
+
 declare interface TextInputElementProps extends DeftElementProps {
     text ?: string,
     placeholder?: string,

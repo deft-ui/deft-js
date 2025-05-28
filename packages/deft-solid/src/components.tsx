@@ -32,13 +32,6 @@ export const Entry = (props: EntryElementProps) => {
     return <entry {...props} />
 }
 
-export const Textedit = (props: TexteditElementProps) => {
-    //@ts-ignore
-    return <textedit {...props} />
-}
-
-export const TextEdit = Textedit;
-
 
 export const Image = (props: ImageElementProps) => {
     //@ts-ignore
@@ -54,3 +47,27 @@ export const Paragraph = (props: ParagraphElementProps) => {
     //@ts-ignore
     return <paragraph {...props} />
 }
+export const RichText = (props: RichTextElementProps) => {
+    //@ts-ignore
+    return <rich-text ref={ref} {...props} />
+};
+export const TextEdit = (props: TextEditElementProps) => {
+    //@ts-ignore
+    return <text-edit ref={ref} {...props} />
+};
+export const TextInput = (props: TextInputElementProps) => {
+    //@ts-ignore
+    return <text-input ref={ref} {...props} />
+};
+export const Checkbox = (props: CheckboxElementProps) => {
+    //@ts-ignore
+    return <checkbox ref={ref} {...props} />
+};
+export const Radio = (props: RadioElementProps) => {
+    //@ts-ignore
+    return <radio ref={ref} {...props} />
+};
+export const RadioGroup = (props: RadioGroupElementProps) => {
+    //@ts-ignore
+    return <radio-group ref={ref} {...props} />
+};
