@@ -71,3 +71,7 @@ export const RadioGroup = (props: RadioGroupElementProps) => {
     //@ts-ignore
     return <radio-group ref={ref} {...props} />
 };
+export const Select = (props: SelectElementProps) => {
+    //@ts-ignore
+    return <select ref={ref} {...props} />
+};

@@ -1,8 +1,7 @@
 import React, {ReactNode} from "react";
-import {DeftWindow} from "./window";
 
 export interface PageRootProps {
-    window: DeftWindow,
+    window: Window,
     root: Element,
     content: ReactNode,
     destroy: (done ?: () => void) => void,
@@ -10,7 +9,7 @@ export interface PageRootProps {
 
 export interface IPageContext {
     root: Element;
-    window: DeftWindow;
+    window: Window;
     destroy: (done ?: () => void) => void;
 }
 

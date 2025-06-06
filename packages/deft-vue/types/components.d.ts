@@ -107,7 +107,7 @@ export const Checkbox: Comp<{
     checked?: boolean,
     disabled?: boolean,
 }, {
-    change ?: () => void,
+    change ?: (e: IVoidEvent) => void,
 }>
 
 export const Radio: Comp<{
@@ -115,7 +115,16 @@ export const Radio: Comp<{
     checked?: boolean,
     disabled?: boolean,
 }, {
-    change ?: () => void,
+    change ?: (e: IVoidEvent) => void,
 }>
 
 export const RadioGroup: Comp<{}, {}>
+
+export const Select: Comp<{
+    value ?: string,
+    options?: SelectOption[],
+    placeholder?: string,
+    disabled?: boolean,
+}, {
+    change ?: (e: IVoidEvent) => void,
+}>

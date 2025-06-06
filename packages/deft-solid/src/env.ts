@@ -112,6 +112,13 @@ declare interface RadioGroupElementProps extends DeftElementProps {
 
 }
 
+declare interface SelectElementProps extends DeftElementProps {
+    value ?: string,
+    options?: SelectOption[],
+    placeholder?: string,
+    disabled?: boolean,
+    onChange?: (event: IVoidEvent) => void,
+}
 
 declare interface TextInputElementProps extends DeftElementProps {
     text ?: string,

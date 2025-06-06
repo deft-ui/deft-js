@@ -2,7 +2,6 @@ import Reconciler from 'react-reconciler'
 import React, {ReactNode} from "react";
 import PageRoot from "./page-root";
 import {createNativeComponent, updateNativeComponent} from "./builtin-components";
-import {DeftWindow, Page} from "./window";
 
 const DEBUG = false;
 const emptyObject = Object.create(null);
@@ -185,48 +184,31 @@ export const DeftRenderer = Reconciler({
     detachDeletedInstance,
 })
 
-export function render(window: DeftWindow, element: ReactNode, guiContainer: ContainerBasedElement, callback, leaveStyle: StyleProps, remove): Page {
+export function render(window: Window, reactNode: ReactNode, deftElement ?: ContainerBasedElement, callback?: () => void): RenderHandle {
+    deftElement = deftElement || window.body;
     //@ts-ignore
-    let root = guiContainer._reactRootContainer
+    let root = deftElement._reactRootContainer
 
     if (!root) {
-        const newRoot = DeftRenderer.createContainer(guiContainer)
+        const newRoot = DeftRenderer.createContainer(deftElement)
         //@ts-ignore
-        root = guiContainer._reactRootContainer = newRoot
+        root = deftElement._reactRootContainer = newRoot
     }
     function destroy(done ?: () => void) {
-        if (leaveStyle) {
-            guiContainer.style = {
-                ...guiContainer.style,
-                ...leaveStyle,
-            };
-        }
-        //TODO use animation end
-        //TODO use computed style
-        const style = guiContainer.style;
-        const animationDuration = style.animationDuration;
-        function doDestroy() {
-            DeftRenderer.updateContainer(null, root, null, null);
-            remove();
-            done?.();
-        }
-        if (animationDuration) {
-            setTimeout(doDestroy, animationDuration);
-        } else {
-            doDestroy();
-        }
+        DeftRenderer.updateContainer(null, root, null, null);
+        done?.();
     }
     function update(element: ReactNode, callback?: () => void) {
         const appRoot = React.createElement(PageRoot, {
             window,
             content: element,
-            root: guiContainer,
+            root: deftElement,
             destroy,
         });
         DeftRenderer.updateContainer(appRoot, root, null, callback);
     }
 
-    update(element, callback);
+    update(reactNode, callback);
 
     return {
         update,

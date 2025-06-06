@@ -4,6 +4,11 @@ declare function setInterval(callback, timeout ?: number): number;
 declare var process: Process;
 declare var navigator: Navigator;
 
+declare interface RenderHandle {
+    update(element: any, callback: () => void): void;
+
+    destroy(callback: () => void): void;
+}
 
 declare type Cursor = "default" | "context-menu" | "help" | "pointer" | "progress"
     | "wait" | "cell" | "crosshair" | "text" | "vertical-text" | "alias" | "copy"

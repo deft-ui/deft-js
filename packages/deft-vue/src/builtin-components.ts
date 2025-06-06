@@ -58,6 +58,7 @@ export function createNativeComponent(tag: string, props) {
         radio: RadioElement,
         "radio-group": RadioGroupElement,
         "rich-text": RichTextElement,
+        select: SelectElement,
     }[tag];
     const element = new NativeElement();
     updateNativeComponent(element, {}, props);

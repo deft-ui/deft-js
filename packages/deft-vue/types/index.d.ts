@@ -11,7 +11,8 @@ import {
     TextEdit,
     Checkbox,
     Radio,
-    RadioGroup
+    RadioGroup,
+    Select,
 } from './components'
 
 export {}
@@ -31,5 +32,6 @@ declare module 'vue' {
         Checkbox: typeof Checkbox,
         Radio: typeof Radio,
         RadioGroup: typeof RadioGroup,
+        Select: typeof Select,
     }
 }
