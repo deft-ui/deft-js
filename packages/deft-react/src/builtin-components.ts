@@ -13,6 +13,7 @@ const nativeComponents = {
     radio: RadioElement,
     "radio-group": RadioGroupElement,
     "rich-text": RichTextElement,
+    select: SelectElement,
 }
 
 function getSetterName(prop) {

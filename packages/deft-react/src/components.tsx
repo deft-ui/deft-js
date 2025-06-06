@@ -75,3 +75,7 @@ export const RadioGroup = forwardRef<RadioGroupElement, RadioGroupElementProps>(
     //@ts-ignore
     return <radio-group ref={ref} {...props} />
 });
+export const Select = forwardRef<SelectElement, SelectElementProps>((props, ref) => {
+    //@ts-ignore
+    return <select ref={ref} {...props} />
+});
