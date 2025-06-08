@@ -19,8 +19,8 @@ function generatePackageJson(isTs) {
   "dependencies": {
     "@babel/runtime": "^7.26.10",
     "cross-env": "^7.0.3",
-    "deft-react": "^0.4.0",
-    "deft-sys": "^0.4.0",
+    "deft-react": "^0.10.0",
+    "deft-sys": "^0.10.0",
     "react": "18.1.0",
     "react-reconciler": "0.28.0"
   },

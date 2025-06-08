@@ -7,22 +7,23 @@ class ErrorBoundary extends React.Component {
         console.error(error);
     }
     render() {
+        //@ts-ignore
         return this.props.children;
     }
 }
 
-function initWindow() {
+function initWindow(): Window {
     const window = globalThis.mainWindow || (globalThis.mainWindow = new Window({
         title: 'Deft App',
     }));
-    window.bindResize((e) => {
+    window.bindResize((e: IResizeEvent) => {
         console.log("window resized", e);
     });
     return window;
 }
 
 const window = initWindow();
-const root = <ErrorBoundary><App/></ErrorBoundary>
+const root = <ErrorBoundary><App /></ErrorBoundary>;
 render(window, root);
 // Hot reload
 //@ts-ignore

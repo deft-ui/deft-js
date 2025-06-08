@@ -5,7 +5,7 @@ const DeftWebpackPlugin = require("deft-webpack-plugin");
 
 module.exports = {
     entry: {
-        index: './ui/main.ts',
+        index: './ui/main.tsx',
     },
     // target: 'node',
     devtool: 'inline-source-map',

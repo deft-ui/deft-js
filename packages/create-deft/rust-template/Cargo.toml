@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-deft = "0.7.0"
+deft = "0.10.0"
 openharmony-ability-derive = { version = "0.0.3" }
 
 [target.'cfg(target_env = "ohos")'.dependencies]
