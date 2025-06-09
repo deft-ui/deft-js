@@ -22,7 +22,7 @@ function createContent() {
     const tip = new LabelElement();
     tip.text = "Edit ui/main.ts and save to reload";
     tip.style = {
-        color: '#5FD8F9',
+        color: '#D00',
     }
     container.addChild(tip);
 

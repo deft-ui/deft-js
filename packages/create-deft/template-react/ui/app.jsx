@@ -6,7 +6,7 @@ export function App() {
         <Container style={{fontSize: 20}}>
             Welcome to Your Deft App
         </Container>
-        <Container style={{color: '#5FD8F9'}}>
+        <Container style={{color: '#D00'}}>
             Edit ui/app.jsx and save to reload
         </Container>
     </Container>
