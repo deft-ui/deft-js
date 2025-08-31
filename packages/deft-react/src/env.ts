@@ -62,17 +62,6 @@ declare interface ContainerElementProps extends DeftElementProps {
     children?: React.ReactNode,
 }
 
-declare interface EntryElementProps extends DeftElementProps {
-    onCaretChange?: (event: ICaretEvent) => void,
-    onTextChange?: (event: ITextEvent) => void,
-    text?: string,
-    multipleLine ?: boolean,
-    autoHeight ?: boolean,
-    rows ?: number,
-    type ?: EntryType,
-    placeholder?: string,
-}
-
 declare interface ImageElementProps extends DeftElementProps {
     src: string,
 }
@@ -81,10 +70,6 @@ declare interface ScrollElementProps extends ContainerElementProps {
     onScroll?: (event: IScrollEvent) => void,
     scrollY ?: "auto"|"always"|"never",
     scrollX ?: "auto"|"always"|"never",
-}
-
-declare interface ParagraphElementProps extends DeftElementProps {
-
 }
 
 declare interface RichTextElementProps extends DeftElementProps {

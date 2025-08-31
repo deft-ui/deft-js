@@ -59,17 +59,6 @@ export const Label: Comp<{
 export const Button: Comp<{
     disabled?: boolean,
 }, {}>
-export const Entry: Comp<{
-    text?: string,
-    multipleLine?: boolean,
-    autoHeight?: boolean,
-    rows?: number,
-    type?: EntryType,
-    placeholder?: string,
-    placeholderStyle?: StyleProps,
-}, {
-    textChange: (event: ITextEvent) => void,
-}>
 export const Image: Comp<{
     src?: string,
 }, {}>
@@ -79,7 +68,6 @@ export const Scroll: Comp<{
 }, {
     scroll: (event: IScrollEvent) => void,
 }>
-export const Paragraph: Comp<{}, {}>
 
 export const RichText: Comp<{}, {}>
 

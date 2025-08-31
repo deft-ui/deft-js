@@ -27,12 +27,6 @@ export const Button = (props: ButtonElementProps) => {
     return <button {...btnProps} >{props.children || props.title || ""}</button>
 }
 
-export const Entry = (props: EntryElementProps) => {
-    //@ts-ignore
-    return <entry {...props} />
-}
-
-
 export const Image = (props: ImageElementProps) => {
     //@ts-ignore
     return <image {...props}/>
@@ -43,10 +37,6 @@ export const Scroll = (props: ScrollElementProps) => {
     return <scroll {...props} />
 };
 
-export const Paragraph = (props: ParagraphElementProps) => {
-    //@ts-ignore
-    return <paragraph {...props} />
-}
 export const RichText = (props: RichTextElementProps) => {
     //@ts-ignore
     return <rich-text ref={ref} {...props} />

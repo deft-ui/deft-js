@@ -58,18 +58,6 @@ declare interface ContainerElementProps extends DeftElementProps {
     children?: any,
 }
 
-declare interface EntryElementProps extends DeftElementProps {
-    onCaretChange?: (event: ICaretEvent) => void,
-    onTextChange?: (event: ITextEvent) => void,
-    text?: string,
-    multipleLine ?: boolean,
-    autoHeight ?: boolean,
-    rows ?: number,
-    type ?: EntryType,
-    placeholder?: string,
-    placeholderStyle?: StyleProps,
-}
-
 declare interface TexteditElementProps extends DeftElementProps {
     text ?: string,
     onCaretChange?: (event: ICaretEvent) => void,
@@ -84,10 +72,6 @@ declare interface ScrollElementProps extends ContainerElementProps {
     onScroll?: (event: IScrollEvent) => void,
     scrollY ?: "auto"|"always"|"never",
     scrollX ?: "auto"|"always"|"never",
-}
-
-declare interface ParagraphElementProps extends DeftElementProps {
-
 }
 
 declare interface RichTextElementProps extends DeftElementProps {

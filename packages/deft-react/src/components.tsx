@@ -27,16 +27,6 @@ export const Button = forwardRef<ButtonElement, ButtonElementProps>((props, ref)
     return <button {...btnProps} ref={ref}>{props.children || props.title || ""}</button>
 })
 
-export const Entry = forwardRef<EntryElement, EntryElementProps>((props, ref) => {
-    const ps = {
-        ...props,
-        style: { ...props?.style },
-    }
-    //@ts-ignore
-    return <entry ref={ref} {...ps} />
-});
-
-
 export const Image = forwardRef<ImageElement, ImageElementProps>((props, ref) => {
     //@ts-ignore
     return <image {...props} ref={ref}/>
@@ -47,10 +37,6 @@ export const Scroll = forwardRef<ScrollElement, ScrollElementProps>((props, ref)
     return <scroll ref={ref} {...props} />
 });
 
-export const Paragraph = forwardRef<ParagraphElement, ParagraphElementProps>((props, ref) => {
-    //@ts-ignore
-    return <paragraph ref={ref} {...props} />
-});
 export const RichText = forwardRef<RichTextElement, RichTextElementProps>((props, ref) => {
     //@ts-ignore
     return <rich-text ref={ref} {...props} />
